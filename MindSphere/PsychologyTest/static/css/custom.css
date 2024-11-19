@@ -335,7 +335,7 @@ footer a.nav-link:hover {
 }
 
 .header-mcu {
-    padding-left: 15.2rem;
+    padding-left: 14.6rem;
     width: calc(100% - 15.2rem);
     transition: padding-left 0.5s ease, width 0.5s ease;
 }

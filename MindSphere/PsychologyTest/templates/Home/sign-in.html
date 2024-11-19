@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="{% static 'css/custom.css' %}">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body class="">
@@ -54,13 +55,7 @@
                         <label for="password" class="position-absolute top-50 translate-middle" style="right: 0px"><i id="toggle-password" class="text-primary fas fa-eye"></i></label>
                     </div>
     
-                    <div class="form-check w-100 text-dark">
-                        <input class="form-check-input" type="checkbox" value="" id="remember">
-                        <label class="form-check-label fs-small" for="remember">
-                            Remember me
-                        </label>
-                    </div>
-                    <div class="w-100 row">
+                    <div class="w-100 row mt-4">
                         <div class="col-6 px-1">
                             <a href="{% url 'home' %}" class="btn btn-secondary w-100 fs-small fw-bold">Back</a>
                         </div>
@@ -77,93 +72,98 @@
             </div>
         </div>
     </section>
+
+    {% include 'loading-spinner.html' %}
      
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        function resetInput() {
-            const inputs = document.querySelectorAll('.form-group input');
-            const inputCheck = document.querySelectorAll('.form-check input');
-            
-            inputs.forEach(function(input) {
-                input.value = '';
-            });
-    
-            inputCheck.forEach(function(input) {
-                input.checked = false;;
-            });
-        }
-        resetInput();
-    
-        function togglePasswordVisibility(passwordInputId, toggleIconId) {
-            const passwordInput = document.getElementById(passwordInputId);
-            const toggleIcon = document.getElementById(toggleIconId);
-    
-            toggleIcon.addEventListener('click', function() {
-                if (passwordInput.type === 'password') {
-                    passwordInput.type = 'text';
-                    toggleIcon.classList.remove('fa-eye');
-                    toggleIcon.classList.add('fa-eye-slash');
-                } else {
-                    passwordInput.type = 'password';
-                    toggleIcon.classList.remove('fa-eye-slash');
-                    toggleIcon.classList.add('fa-eye');
-                }
-            });
-        }
-    
-        togglePasswordVisibility('password', 'toggle-password');
-
-        document.getElementById('form-signin').addEventListener('submit', async function (event) {
-            event.preventDefault();
-            const errorField = document.getElementById('error-message');
-        
-            const formData = new FormData(this);
-            const response = await fetch('{% url "sign-in" %}', {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-CSRFToken': '{{ csrf_token }}',
-                },
-            });
-
-            const result = await response.json();
-        
-            document.getElementById('error-message').textContent = '';
-        
-            if (result.status === 'success') {
+        $(document).ready(function() {
+            function SuccessPopUp(message){
                 Swal.fire({
                     icon: 'success',
-                    title: 'Success!',
-                    text: result.message,
+                    title: 'Successfully!',
+                    text: message,
                     confirmButtonText: 'Ok',
                     confirmButtonColor: '#0EA5E9',
                 }).then(() => {
-                    resetInput();
-                    window.location.href = '{% url "home" %}';
+                    window.location.href = '{% url "dashboard" %}';
                 });
-            } else {
-                let errorMessage = result.message;
-        
+            }
+    
+            function ErrorPopUp(message){
                 Swal.fire({
                     icon: 'error',
-                    title: 'Error!',
-                    text: errorMessage,
+                    title: 'Failed!',
+                    text: message,
                     confirmButtonText: 'Ok',
+                    confirmButtonColor: '#dc3545',
                 });
-
-                if (result.errors) {
-                    for (const field in result.errors) {
-                        if (result.errors.hasOwnProperty(field)) {
-                            if (errorField) {
-                                errorField.textContent = '*' + result.errors[field].join(', ');
-                                errorField.classList.remove('d-none');
-                            }
-                        }
-                    }
-                }
             }
-        });        
+            
+            function onLoading() {
+                $('#loading').removeClass('d-none');
+                $('.overlay').removeClass('d-none');
+            }
+    
+            function onLoaded() {
+                $('#loading').addClass('d-none');
+                $('.overlay').addClass('d-none');
+            }
+    
+            function resetInput() {
+                const inputs = $('.form-group input');
+            
+                inputs.each(function() {
+                    $(this).val('');
+                });
+            }
+            resetInput();        
+        
+            const passwordInput = $('#password');
+            const toggleIcon = $('#toggle-password');
+            toggleIcon.on('click', function() {
+                if (passwordInput.attr('type') === 'password') {
+                    passwordInput.attr('type', 'text');
+                    toggleIcon.removeClass('fa-eye').addClass('fa-eye-slash');
+                } else {
+                    passwordInput.attr('type', 'password');
+                    toggleIcon.removeClass('fa-eye-slash').addClass('fa-eye');
+                }
+            });
+    
+            $('#form-signin').on('submit', function(event) {
+                event.preventDefault();
+                onLoading();
+                $('#error-message').addClass('d-none');
+                
+                const formData = new FormData(this);
+            
+                $.ajax({
+                    url: '{% url "sign-in" %}',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    success: function(response) {
+                        onLoaded();
+                        if (response.status === 'success') {
+                            SuccessPopUp(response.message);
+                        } else {
+                            ErrorPopUp(response.message);
+                            $('#error-message').text(response.message).removeClass('d-none');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        onLoaded();
+                        ErrorPopUp('An unexpected error occurred. Please try again.');
+                    }
+                });
+            });              
+        });
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 
 </html>

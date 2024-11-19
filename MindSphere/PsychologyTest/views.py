@@ -24,9 +24,6 @@ def Contact(request):
     return render(request, 'Home/contact.html', context)
 
 def SignIn(request):
-    # if request.user.is_authenticated:
-    #     return redirect('dashboard')
-    
     context = {
         'section' : 'sign-in'
     }
@@ -53,31 +50,48 @@ def SignIn(request):
     return render(request, 'Home/sign-in.html', context)
 
 def SignUp(request):
-    if request.user.is_authenticated:
-        return redirect('dashboard')
-    
-    if request.method == 'POST':
+    if request.method == "POST":
         form = SignUpForm(request.POST)
+
         if form.is_valid():
-            form.save()
+            password = form.cleaned_data['password']
+            user = form.save(commit=False)
+            user.set_password(password)
+            user.save()
+
             return JsonResponse({
                 'status': 'success',
                 'message': 'Sign up successful!'
             })
+
         else:
             errors = {}
-            for field, messages in form.errors.items():
-                errors[field] = messages
- 
+            for field, error_list in form.errors.items():
+                errors[field] = error_list
+
             return JsonResponse({
                 'status': 'error',
-                'message': errors
+                'message': 'Sign up failed.',
+                'errors': errors
             })
 
-    else:
-        form = SignUpForm()
-    return render(request, 'Home/sign-up.html', {'form': form, 'section' : 'sign-in'})
+    return render(request, 'Home/sign-up.html', {'section': 'sign-in'})
 
 def SignOut(request):
     logout(request)
-    return redirect('sign-in') 
+    return redirect('sign-in')
+
+def Dashboard(request):
+    return render(request, 'MindSphere/dashboard.html', context={'section' : 'dashboard'})
+
+def TestSchedule(request):
+    return render(request, 'MindSphere/schedule.html', context={'section' : 'test-schedule'})
+
+def PsychologicalTest(request):
+    return render(request, 'MindSphere/test.html', context={'section' : 'psychological-test'})
+
+def PsycologistManagement(request):
+    return render(request, 'MindSphere/psychologist.html', context={'section' : 'psychologist'})
+
+def History(request):
+    return render(request, 'MindSphere/history.html', context={'section' : 'history'})

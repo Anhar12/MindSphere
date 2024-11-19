@@ -11,7 +11,7 @@ class Results(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.ResultNumber:
-            test_name = self.Registration.TestSchedule.Name.replace(' ', '-')
+            test_name = self.Registration.TestSchedule.id
             reg_participant_number = self.Registration.ParticipantNumber
             day = self.Date.day
             month = self.Date.month
@@ -20,7 +20,11 @@ class Results(models.Model):
             roman_month = self.convert_to_roman(month)
 
             self.ResultNumber = f"MS/{test_name}/{day}/{roman_month}/{year}/{reg_participant_number}"
-
+        
+        registration = self.Registration
+        registration.Status = 'Finished'
+        registration.save()
+        
         super().save(*args, **kwargs)
 
     def convert_to_roman(self, number):

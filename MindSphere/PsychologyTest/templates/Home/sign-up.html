@@ -16,73 +16,75 @@
     <link rel="stylesheet" href="{% static 'css/custom.css' %}">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body class="">
     <section class="w-100 d-flex min-vh-100">
         <div class="w-md-50 w-100 bg-primary d-flex align-items-center justify-content-center">
-            <div id="signup-form" class="text-dark bg-white d-flex flex-column justify-content-center shadow rounded-3 p-4 gap-1" style="width:60%;">
+            <div id="" class="text-dark bg-white d-flex flex-column justify-content-center shadow rounded-3 p-4 gap-1" style="width:60%;">
                 <div class="d-flex justify-content-center gap-2 align-items-center">
                     <img src="static/images/LogoPrimary.png" width="60px" alt="Logo PT. XXX">
                     <h4 class="text-center mb-0 mt-2 fw-bold">Create Your Account</h4>
                 </div>
                 <p class="text-center fst-italic text-secondary mb-2" style="font-size: small;">Sign up to access personalized psychological test</p>
-                <form id="signUpForm" method="POST" autocomplete="off" class="d-flex flex-column align-items-center gap-2 mt-2">
+                <form id="form-signup" method="POST" autocomplete="off" class="d-flex flex-column align-items-center gap-2 mt-2">
                     {% csrf_token %}
-                    {{ form.non_field_errors }}
-    
-                    <!-- Email Field -->
+                    
+                    <!-- Username Field -->
                     <div class="w-100">
-                        <div class="text-danger d-none text-end w-100 fs-smaller ps-1 mb-1" id="email-error"></div>
+                        <div class="text-danger d-none text-end w-100 fs-smaller ps-1 mb-1" id="username_error"></div>
                         <div class="form-group w-100 position-relative">
-                            <input type="text" class="form-control pe-5 fs-small" id="username" name="username" required placeholder=" " maxlength="150"/>
+                            <input type="text" class="form-control pe-5 fs-small" id="username" name="username" required placeholder=" " maxlength="150" value="{{ form.username.value|default_if_none:'' }}"/>
                             <label for="username" class="form-label fs-small bg-white px-1">Username</label>
                             <label for="username" class="position-absolute top-50 translate-middle" style="right: 3px"><i class="text-primary fas fa-user"></i></label>
                         </div>
                     </div>
-    
+                
                     <!-- First Name Field -->
                     <div class="w-100 mt-2">
-                        <div class="text-danger d-none text-end w-100 fs-smaller ps-1 mb-1" id="first_name-error"></div>
+                        <div class="text-danger d-none text-end w-100 fs-smaller ps-1 mb-1" id="first_name_error"></div>
                         <div class="form-group w-100 position-relative">
-                            <input type="text" class="form-control pe-5 fs-small" id="first_name" name="first_name" required placeholder=" " maxlength="150"/>
+                            <input type="text" class="form-control pe-5 fs-small" id="first_name" name="first_name" required placeholder=" " maxlength="150" value="{{ form.first_name.value|default_if_none:'' }}"/>
                             <label for="first_name" class="form-label fs-small bg-white px-1">First Name</label>
                             <label for="first_name" class="position-absolute top-50 translate-middle" style="right: 3px"><i class="text-primary fas fa-user"></i></label>
                         </div>
                     </div>
-    
+                
                     <!-- Last Name Field -->
                     <div class="w-100 mt-2">
-                        <div class="text-danger d-none text-end w-100 fs-smaller ps-1 mb-1" id="last_name-error"></div>
+                        <div class="text-danger d-none text-end w-100 fs-smaller ps-1 mb-1" id="last_name_error"></div>
                         <div class="form-group w-100 position-relative">
-                            <input type="text" class="form-control pe-5 fs-small" id="last_name" name="last_name" required placeholder=" " maxlength="150"/>
+                            <input type="text" class="form-control pe-5 fs-small" id="last_name" name="last_name" required placeholder=" " maxlength="150" value="{{ form.last_name.value|default_if_none:'' }}"/>
                             <label for="last_name" class="form-label fs-small bg-white px-1">Last Name</label>
                             <label for="last_name" class="position-absolute top-50 translate-middle" style="right: 3px"><i class="text-primary fas fa-user"></i></label>
                         </div>
                     </div>
-    
+                
                     <!-- Password Field -->
                     <div class="w-100 mt-2">
-                        <div class="text-danger d-none text-end w-100 fs-smaller ps-1 mb-1" id="password-error"></div>
+                        <div class="text-danger d-none text-end w-100 fs-smaller ps-1 mb-1" id="password_error"></div>
                         <div class="form-group w-100 position-relative">
                             <input type="password" class="form-control pe-5 fs-small" id="password" name="password" required placeholder=" " maxlength="150"/>
                             <label for="password" class="form-label fs-small bg-white px-1">Password</label>
                             <label for="password" class="position-absolute top-50 translate-middle" style="right: 0px"><i id="toggle-password" class="text-primary fas fa-eye"></i></label>
                         </div>
                     </div>
-    
+                
                     <!-- Confirm Password Field -->
                     <div class="w-100 mt-2">
-                        <div class="text-danger d-none text-end w-100 fs-smaller ps-1 mb-1" id="confirm_password-error"></div>
+                        <div class="text-danger d-none text-end w-100 fs-smaller ps-1 mb-1" id="confirm_password_error"></div>
                         <div class="form-group w-100 position-relative">
                             <input type="password" class="form-control pe-5 fs-small" id="confirm_password" name="confirm_password" required placeholder=" " maxlength="150"/>
                             <label for="confirm_password" class="form-label fs-small bg-white px-1">Confirm Password</label>
-                            <label for="password" class="position-absolute top-50 translate-middle" style="right: 0px"><i id="toggle-confirm-password" class="text-primary fas fa-eye"></i></label>
+                            <label for="confirm_password" class="position-absolute top-50 translate-middle" style="right: 0px"><i id="toggle-confirm-password" class="text-primary fas fa-eye"></i></label>
                         </div>
                     </div>
-    
+                
                     <button type="submit" class="btn btn-primary w-100 mx-auto fs-small fw-bold mt-2">Sign Up</button>
                 </form>
+                
     
                 <div class="d-flex justify-content-center gap-2 mt-2">
                     <p class="text-center text-secondary my-auto fs-small">Already have an account? </p>
@@ -103,96 +105,122 @@
             </div>
         </div>
     </section>
+
+    {% include 'loading-spinner.html' %}
      
     <script>
-        function resetInput() {
-            const inputs = document.querySelectorAll('.form-group input');
-            const inputCheck = document.querySelectorAll('.form-check input');
-            
-            inputs.forEach(function(input) {
-                input.value = '';
+        function SuccessPopUp(message){
+            Swal.fire({
+                icon: 'success',
+                title: 'Successfully!',
+                text: message,
+                confirmButtonText: 'Ok',
+                confirmButtonColor: '#0EA5E9',
+            }).then(() => {
+                window.location.href = '{% url "sign-in" %}';
             });
-    
-            inputCheck.forEach(function(input) {
-                input.checked = false;;
+        }
+
+        function ErrorPopUp(message){
+            Swal.fire({
+                icon: 'error',
+                title: 'Failed!',
+                text: message,
+                confirmButtonText: 'Ok',
+                confirmButtonColor: '#dc3545',
+            });
+        }
+        
+        function onLoading() {
+            $('#loading').removeClass('d-none');
+            $('.overlay').removeClass('d-none');
+        }
+
+        function onLoaded() {
+            $('#loading').addClass('d-none');
+            $('.overlay').addClass('d-none');
+        }
+
+        function resetInput() {
+            const inputs = $('.form-group input');
+        
+            inputs.each(function() {
+                $(this).val('');
             });
         }
         resetInput();
-    
-        function togglePasswordVisibility(passwordInputId, toggleIconId) {
-            const passwordInput = document.getElementById(passwordInputId);
-            const toggleIcon = document.getElementById(toggleIconId);
-    
-            toggleIcon.addEventListener('click', function() {
-                if (passwordInput.type === 'password') {
-                    passwordInput.type = 'text';
-                    toggleIcon.classList.remove('fa-eye');
-                    toggleIcon.classList.add('fa-eye-slash');
-                } else {
-                    passwordInput.type = 'password';
-                    toggleIcon.classList.remove('fa-eye-slash');
-                    toggleIcon.classList.add('fa-eye');
+
+        function resetError() {
+            const errors = $('.text-danger');
+            errors.each(function() {
+                if (!$(this).hasClass('d-none')) {
+                    $(this).addClass('d-none');
                 }
             });
         }
+        resetError();     
     
-        togglePasswordVisibility('password', 'toggle-password');
-        togglePasswordVisibility('password', 'toggle-confirm-password');
+        const passwordInput = $('#password');
+        const passwordInput2 = $('#confirm_password');
+        const toggleIcon = $('#toggle-password');
+        const toggleIcon2 = $('#toggle-confirm-password');
+        toggleIcon.on('click', function() {
+            if (passwordInput.attr('type') === 'password') {
+                passwordInput.attr('type', 'text');
+                toggleIcon.removeClass('fa-eye').addClass('fa-eye-slash');
+            } else {
+                passwordInput.attr('type', 'password');
+                toggleIcon.removeClass('fa-eye-slash').addClass('fa-eye');
+            }
+        });
+        toggleIcon2.on('click', function() {
+            if (passwordInput2.attr('type') === 'password') {
+                passwordInput2.attr('type', 'text');
+                toggleIcon2.removeClass('fa-eye').addClass('fa-eye-slash');
+            } else {
+                passwordInput2.attr('type', 'password');
+                toggleIcon2.removeClass('fa-eye-slash').addClass('fa-eye');
+            }
+        });
 
-        document.getElementById('signUpForm').addEventListener('submit', async function(event) {
+
+        $('#form-signup').on('submit', function(event) {
             event.preventDefault();
+            resetError();
+            onLoading();
             
             const formData = new FormData(this);
-            const response = await fetch('{% url "sign-up" %}', {
-                method: 'POST',
-                body: formData,
+        
+            $.ajax({
+                url: '{% url "sign-up" %}',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
                 headers: {
-                    'X-CSRFToken': '{{ csrf_token }}',
+                    'X-CSRFToken': '{{ csrf_token }}'
                 },
-            });
-            
-            const result = await response.json();
-        
-            document.getElementById('email-error').textContent = '';
-            document.getElementById('first_name-error').textContent = '';
-            document.getElementById('last_name-error').textContent = '';
-            document.getElementById('password-error').textContent = '';
-            document.getElementById('confirm_password-error').textContent = '';
-        
-            if (result.status === 'success') {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success!',
-                    text: result.message,
-                    confirmButtonText: 'Ok',
-                }).then(() => {
-                    resetInput();
-                });
-            } else {
-                let errorMessage = result.message;
-        
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error!',
-                    text: errorMessage,
-                    confirmButtonText: 'Ok',
-                });
-
-                if (result.errors) {
-                    for (const field in result.errors) {
-                        if (result.errors.hasOwnProperty(field)) {
-                            const errorField = document.getElementById(`${field}-error`);
-                            if (errorField) {
-                                errorField.textContent = '*' + result.errors[field].join(', '); // Tampilkan kesalahan
-                                errorField.classList.remove('d-none'); // Tampilkan elemen error
+                success: function(response) {
+                    onLoaded();
+                    if (response.status === 'success') {
+                        SuccessPopUp(response.message);
+                    } else {
+                        ErrorPopUp(response.message);
+                        if (response.errors) {
+                            for (const field in response.errors) {
+                                const errorField = $('#'+field+'_error');
+                                errorField.removeClass('d-none').text(response.errors[field]);
                             }
                         }
                     }
+                },
+                error: function(xhr, status, error) {
+                    onLoaded();
+                    ErrorPopUp('An unexpected error occurred. Please try again.');
                 }
-            }
-        });              
+            });
+        });         
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 
 </html>

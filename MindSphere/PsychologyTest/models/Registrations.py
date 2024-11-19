@@ -11,24 +11,18 @@ class Registrations(models.Model):
     User = models.ForeignKey(Users, limit_choices_to={'role': Users.PARTICIPANT}, on_delete=models.CASCADE)
     TestSchedule = models.ForeignKey(TestSchedules, on_delete=models.CASCADE)
     Status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Waiting for Results')
-    ParticipantNumber = models.IntegerField(unique=True)
+    ParticipantNumber = models.IntegerField()
 
-    def clean(self):
+    def save(self, *args, **kwargs):
         if Registrations.objects.filter(User=self.User, TestSchedule=self.TestSchedule).exists():
-            raise ValidationError('This participant has already registered for this test.')
+            raise ValidationError(f'{self.User.username} participant has already registered for {self.TestSchedule}')
 
         total_registered = Registrations.objects.filter(TestSchedule=self.TestSchedule).count()
         if total_registered >= self.TestSchedule.Capacity:
             raise ValidationError('Test schedule has reached its maximum capacity.')
 
-    def save(self, *args, **kwargs):
-        self.clean()
-
         if not self.ParticipantNumber:
-            total_registered = Registrations.objects.filter(TestSchedule=self.TestSchedule).count() + 1
-            if total_registered > self.TestSchedule.Capacity:
-                raise ValidationError('Test schedule has reached its maximum capacity.')
-            self.ParticipantNumber = total_registered
+            self.ParticipantNumber = total_registered + 1
         
         super().save(*args, **kwargs)
 
