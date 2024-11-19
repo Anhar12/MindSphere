@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - MindSphere</title>
+    <link rel="icon" type="image/x-icon" href="static/images/Logo.ico">
+
+    {% load django_bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+
+    {% load static %}
+
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body class="">
+    <section class="w-100 d-flex min-vh-100">
+        <div class="w-md-50 w-100 bg-primary d-flex align-items-center justify-content-center">
+            <div id="signup-form" class="text-dark bg-white d-flex flex-column justify-content-center shadow rounded-3 p-4 gap-1" style="width:60%;">
+                <div class="d-flex justify-content-center gap-2 align-items-center">
+                    <img src="static/images/LogoPrimary.png" width="60px" alt="Logo PT. XXX">
+                    <h4 class="text-center mb-0 mt-2 fw-bold">Create Your Account</h4>
+                </div>
+                <p class="text-center fst-italic text-secondary mb-2" style="font-size: small;">Sign up to access personalized psychological test</p>
+                <form id="signUpForm" method="POST" autocomplete="off" class="d-flex flex-column align-items-center gap-2 mt-2">
+                    {% csrf_token %}
+                    {{ form.non_field_errors }}
+    
+                    <!-- Email Field -->
+                    <div class="w-100">
+                        <div class="text-danger d-none text-end w-100 fs-smaller ps-1 mb-1" id="email-error"></div>
+                        <div class="form-group w-100 position-relative">
+                            <input type="text" class="form-control pe-5 fs-small" id="username" name="username" required placeholder=" " maxlength="150"/>
+                            <label for="username" class="form-label fs-small bg-white px-1">Username</label>
+                            <label for="username" class="position-absolute top-50 translate-middle" style="right: 3px"><i class="text-primary fas fa-user"></i></label>
+                        </div>
+                    </div>
+    
+                    <!-- First Name Field -->
+                    <div class="w-100 mt-2">
+                        <div class="text-danger d-none text-end w-100 fs-smaller ps-1 mb-1" id="first_name-error"></div>
+                        <div class="form-group w-100 position-relative">
+                            <input type="text" class="form-control pe-5 fs-small" id="first_name" name="first_name" required placeholder=" " maxlength="150"/>
+                            <label for="first_name" class="form-label fs-small bg-white px-1">First Name</label>
+                            <label for="first_name" class="position-absolute top-50 translate-middle" style="right: 3px"><i class="text-primary fas fa-user"></i></label>
+                        </div>
+                    </div>
+    
+                    <!-- Last Name Field -->
+                    <div class="w-100 mt-2">
+                        <div class="text-danger d-none text-end w-100 fs-smaller ps-1 mb-1" id="last_name-error"></div>
+                        <div class="form-group w-100 position-relative">
+                            <input type="text" class="form-control pe-5 fs-small" id="last_name" name="last_name" required placeholder=" " maxlength="150"/>
+                            <label for="last_name" class="form-label fs-small bg-white px-1">Last Name</label>
+                            <label for="last_name" class="position-absolute top-50 translate-middle" style="right: 3px"><i class="text-primary fas fa-user"></i></label>
+                        </div>
+                    </div>
+    
+                    <!-- Password Field -->
+                    <div class="w-100 mt-2">
+                        <div class="text-danger d-none text-end w-100 fs-smaller ps-1 mb-1" id="password-error"></div>
+                        <div class="form-group w-100 position-relative">
+                            <input type="password" class="form-control pe-5 fs-small" id="password" name="password" required placeholder=" " maxlength="150"/>
+                            <label for="password" class="form-label fs-small bg-white px-1">Password</label>
+                            <label for="password" class="position-absolute top-50 translate-middle" style="right: 0px"><i id="toggle-password" class="text-primary fas fa-eye"></i></label>
+                        </div>
+                    </div>
+    
+                    <!-- Confirm Password Field -->
+                    <div class="w-100 mt-2">
+                        <div class="text-danger d-none text-end w-100 fs-smaller ps-1 mb-1" id="confirm_password-error"></div>
+                        <div class="form-group w-100 position-relative">
+                            <input type="password" class="form-control pe-5 fs-small" id="confirm_password" name="confirm_password" required placeholder=" " maxlength="150"/>
+                            <label for="confirm_password" class="form-label fs-small bg-white px-1">Confirm Password</label>
+                            <label for="password" class="position-absolute top-50 translate-middle" style="right: 0px"><i id="toggle-confirm-password" class="text-primary fas fa-eye"></i></label>
+                        </div>
+                    </div>
+    
+                    <button type="submit" class="btn btn-primary w-100 mx-auto fs-small fw-bold mt-2">Sign Up</button>
+                </form>
+    
+                <div class="d-flex justify-content-center gap-2 mt-2">
+                    <p class="text-center text-secondary my-auto fs-small">Already have an account? </p>
+                    <a href="{% url 'sign-in' %}" class="btn border-0 p-0 fw-bold text-primary btn-portal my-auto fs-small">Sign In</a>
+                </div>
+            </div>
+        </div>
+    
+        <div class="w-md-50 w-100 bg-primary d-none d-md-flex align-items-center">
+            <div class="w-100 w-md-50 bg-primary text-white transition hero-left d-none d-md-flex flex-column justify-content-center">
+                <div class="d-flex justify-content-center gap-2 align-items-center">
+                    <h2 id="hero-title" class="text-center mb-3 fw-bold transition">Your Account, Your Privacy</h2>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <img id="portal-image" src="static/images/signin-hero.png" class="w-50" height="230" alt="Sign In MCU">
+                </div>
+                <p id="hero-text" class="text-center fw-bold mt-3 mb-0">Create an account to secure your psychological test results</p>
+            </div>
+        </div>
+    </section>
+     
+    <script>
+        function resetInput() {
+            const inputs = document.querySelectorAll('.form-group input');
+            const inputCheck = document.querySelectorAll('.form-check input');
+            
+            inputs.forEach(function(input) {
+                input.value = '';
+            });
+    
+            inputCheck.forEach(function(input) {
+                input.checked = false;;
+            });
+        }
+        resetInput();
+    
+        function togglePasswordVisibility(passwordInputId, toggleIconId) {
+            const passwordInput = document.getElementById(passwordInputId);
+            const toggleIcon = document.getElementById(toggleIconId);
+    
+            toggleIcon.addEventListener('click', function() {
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    toggleIcon.classList.remove('fa-eye');
+                    toggleIcon.classList.add('fa-eye-slash');
+                } else {
+                    passwordInput.type = 'password';
+                    toggleIcon.classList.remove('fa-eye-slash');
+                    toggleIcon.classList.add('fa-eye');
+                }
+            });
+        }
+    
+        togglePasswordVisibility('password', 'toggle-password');
+        togglePasswordVisibility('password', 'toggle-confirm-password');
+
+        document.getElementById('signUpForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(this);
+            const response = await fetch('{% url "sign-up" %}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                },
+            });
+            
+            const result = await response.json();
+        
+            document.getElementById('email-error').textContent = '';
+            document.getElementById('first_name-error').textContent = '';
+            document.getElementById('last_name-error').textContent = '';
+            document.getElementById('password-error').textContent = '';
+            document.getElementById('confirm_password-error').textContent = '';
+        
+            if (result.status === 'success') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: result.message,
+                    confirmButtonText: 'Ok',
+                }).then(() => {
+                    resetInput();
+                });
+            } else {
+                let errorMessage = result.message;
+        
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: errorMessage,
+                    confirmButtonText: 'Ok',
+                });
+
+                if (result.errors) {
+                    for (const field in result.errors) {
+                        if (result.errors.hasOwnProperty(field)) {
+                            const errorField = document.getElementById(`${field}-error`);
+                            if (errorField) {
+                                errorField.textContent = '*' + result.errors[field].join(', '); // Tampilkan kesalahan
+                                errorField.classList.remove('d-none'); // Tampilkan elemen error
+                            }
+                        }
+                    }
+                }
+            }
+        });              
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</body>
+
+</html>
