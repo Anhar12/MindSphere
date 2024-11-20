@@ -10,13 +10,14 @@ class TestSchedules(models.Model):
     Date = models.DateTimeField()
     Location = models.CharField(max_length=250)
     Capacity = models.IntegerField()
+    Image = models.ImageField(upload_to='test_schedules/', blank=True, null=True)
 
     def clean(self):
         if self.Date < now() + timedelta(days=1):
-            raise ValidationError({'Date': 'The test date must be at least tomorrow.'})
+            raise ValidationError({'Date': 'At least tomorrow.'})
 
         if self.Capacity > 150:
-            raise ValidationError({'Capacity': 'The capacity cannot exceed 150 participants.'})
+            raise ValidationError({'Capacity': 'cannot exceed 150 participants.'})
 
     def save(self, *args, **kwargs):
         self.clean()

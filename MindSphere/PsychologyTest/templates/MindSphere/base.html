@@ -33,10 +33,10 @@
                     Mindsphere
                 </a>
             </div>
-            <p class="d-md-block d-none fs-smaller text-light my-0" id="current-time"></p>
+            <p class="d-md-block fs-small text-light fw-semibold my-0">Hello, {{ user.first_name }} {{ user.last_name }}</p>
         </section>
 
-        <main class="d-flex flex-grow-1">
+        <main class="d-flex flex-grow-1 w-100">
             {% block content %}
 
             {% endblock %}

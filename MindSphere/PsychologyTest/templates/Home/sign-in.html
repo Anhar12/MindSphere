@@ -76,6 +76,19 @@
     {% include 'loading-spinner.html' %}
      
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {% if messages %}
+        {% for message in messages %}
+            <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Access Denied',
+                    text: '{{ message }}',
+                    confirmButtonText: 'Ok',
+                    confirmButtonColor: '#DC3545',
+                });
+            </script>
+        {% endfor %}
+    {% endif %}
     <script>
         $(document).ready(function() {
             function SuccessPopUp(message){

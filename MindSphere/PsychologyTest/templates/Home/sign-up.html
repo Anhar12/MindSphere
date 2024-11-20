@@ -183,7 +183,6 @@
             }
         });
 
-
         $('#form-signup').on('submit', function(event) {
             event.preventDefault();
             resetError();
@@ -209,7 +208,7 @@
                         if (response.errors) {
                             for (const field in response.errors) {
                                 const errorField = $('#'+field+'_error');
-                                errorField.removeClass('d-none').text(response.errors[field]);
+                                errorField.removeClass('d-none').text('*'+response.errors[field]);
                             }
                         }
                     }
