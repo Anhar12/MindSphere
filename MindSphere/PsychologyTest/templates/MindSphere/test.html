@@ -6,11 +6,156 @@ Test Psychologist - Mindsphere
 
 {% block content %}
 <section class="w-100 px-4 pt-5 pt-md-3">
-    <h5 class="fw-bold fs-md-4 fs-5 text-center">Welcome, <span class="text-primary">{{ user.first_name }} {{ user.last_name }}</span></h5>
+    <h5 class="fw-bold fs-md-4 fs-5 text-center">Your <span class="text-primary">psychological</span> test <span class="text-primary">schedule</span></h5>
+
+    <form id="form-search" method="GET" autocomplete="off" action="#" class="d-flex mt-3 align-items-center w-100">
+        <div class="form-group w-100 pe-1">
+            <input type="search" class="form-control fs-small" id="search" name="q" placeholder=" " maxlength="150" value="{{ query|default:'' }}"/>
+            <label for="search" class="form-label fs-small bg-white px-1">Search your schedule</label>
+        </div>
+        <button type="submit" class="btn btn-primary fs-small fw-bold"><i class="fa-solid fa-magnifying-glass"></i></button>
+    </form>
+
+    {% if registrations_json %}
+        <div id="myGrid" class="ag-theme-quartz d-none my-2" style="height: 70vh; width: 100%;"></div>
+        <div id="loading-spinner" class="d-flex justify-content-center align-items-center" style="height: 100%;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    {% else %}
+        <div class="alert alert-warning text-center w-100 my-2">
+            No psychological test schedule found.
+        </div>
+    {% endif %}
 </section>
 
 <script>
-    
+    $(document).ready(function () {
+        function formatDate(params) {
+            const date = new Date(params.value);
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+            return date.toLocaleDateString('en-GB', options);
+        }
+
+        const regisData = {{ registrations_json|safe }};
+
+        function formatDate(params) {
+            const date = new Date(params.value);
+            const options = {
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric'
+            };
+            return date.toLocaleDateString('en-GB', options);
+        }
+        
+        const formattedData = regisData.map(item => ({
+            id: item.id,
+            name: item.name,
+            schedule_name: item.schedule_name,
+            psychologist: item.psychologist,
+            number: item.number,
+            location: item.location,
+            date: item.date,
+            status: item.status,
+        }));
+        
+        const gridOptions = {
+            columnDefs: [
+                {
+                    headerName: '#',
+                    valueGetter: 'node.rowIndex + 1',
+                    width: 65,
+                    filter: false,
+                },
+                {
+                    headerName: 'Participant',
+                    field: 'name',
+                    flex: 1,
+                    minWidth: 250
+                },
+                {
+                    headerName: 'Psychological Test',
+                    field: 'schedule_name',
+                    flex: 1,
+                    minWidth: 450
+                },
+                {
+                    headerName: 'Psychologist',
+                    field: 'psychologist',
+                    flex: 1,
+                    minWidth: 300
+                },
+                {
+                    headerName: 'Number',
+                    field: 'number',
+                    width: 150,
+                    filter: false
+                },
+                {
+                    headerName: 'Location',
+                    field: 'location',
+                    flex: 1,
+                    minWidth: 300
+                },
+                {
+                    headerName: 'Date',
+                    field: 'date',
+                    flex: 1,
+                    minWidth: 250,
+                    valueFormatter: formatDate
+                },
+                {
+                    headerName: 'Status',
+                    field: 'status',
+                    flex: 1,
+                    minWidth: 200
+                },
+                {
+                    headerName: 'Action',
+                    {% if user.role == 2 %}
+                        cellRenderer: function (params) {
+                            const updateButton = document.createElement('button');
+                            updateButton.innerHTML = '<i class="fas fa-trash-alt"></i>';
+                            updateButton.className = 'btn btn-danger py-1';
+                            updateButton.addEventListener('click', function () {
+
+                            });
+            
+                            const buttonContainer = document.createElement('div');
+                            buttonContainer.appendChild(updateButton);
+            
+                            return buttonContainer;
+                        },
+                        filter: false,
+                        sortable: false,
+                        width: 100,
+                    {% else %}
+                        
+                    {% endif %}
+                }
+            ],
+            defaultColDef: {
+                sortable: true,
+                resizable: false,
+                suppressMovable: true,
+                filter: true
+            },
+            rowSelection: 'multiple',
+            suppressRowClickSelection: true,
+            rowData: formattedData,
+            pagination: true,
+            paginationPageSize: 20,
+            getRowId: function (params) {
+                return params.data.id;
+            },
+        };
+        
+        const eGridDiv = document.querySelector('#myGrid');
+        new agGrid.Grid(eGridDiv, gridOptions);        
+
+        document.getElementById('loading-spinner').classList.add('d-none');
+        document.getElementById('myGrid').classList.remove('d-none');
+    });
 </script>
 
 {% endblock %}

@@ -171,7 +171,15 @@
                     },
                     error: function(xhr, status, error) {
                         onLoaded();
-                        ErrorPopUp('An unexpected error occurred. Please try again.');
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Failed!',
+                            text: 'An unexpected error occurred. Please try again.',
+                            confirmButtonText: 'Ok',
+                            confirmButtonColor: '#dc3545',
+                        }).then(() => {
+                            location.reload();
+                        });
                     }
                 });
             });              

@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from .decorators import admin_required, login_required, user_required
+from .decorators import admin_required, login_required, user_required, ParticipantPsychologist_required
 from django.http import JsonResponse
 from .forms import SignUpForm, ScheduleForm
 from .models import Registrations, Users, Results, TestSchedules
@@ -250,9 +250,33 @@ def RegisterSchedule(request, pk):
         
         return JsonResponse({'status': 'success', 'message': 'Registration successful!'})
 
-@user_required()
+@ParticipantPsychologist_required()
 def PsychologicalTest(request):
-    return render(request, 'MindSphere/test.html', context={'section' : 'psychological-test'})
+    registrations = Registrations.objects.all()
+    
+    if request.user.role == Users.PARTICIPANT:
+        registrations = Registrations.objects.filter(User=request.user)
+    elif request.user.role == Users.PSYCHOLOGIST:
+        registrations = Registrations.objects.filter(TestSchedule__Psychologist=request.user)
+
+    serialized_data = [
+        {
+            'id': reg.id,
+            'name': f"{reg.User.first_name} {reg.User.last_name}",
+            'schedule_name': reg.TestSchedule.Name,
+            'psychologist': f"{reg.TestSchedule.Psychologist.first_name} {reg.TestSchedule.Psychologist.last_name}",
+            'number': reg.ParticipantNumber,
+            'location': reg.TestSchedule.Location,
+            'date': reg.TestSchedule.Date.isoformat(),
+            'status': reg.Status
+        }
+        for reg in registrations
+    ]
+
+    return render(request, 'MindSphere/test.html', context={
+        'section': 'psychological-test',
+        'registrations_json': serialized_data
+    })
 
 @admin_required()
 def PsycologistManagement(request):
