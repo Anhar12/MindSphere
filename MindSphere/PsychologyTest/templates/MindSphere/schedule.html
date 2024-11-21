@@ -9,7 +9,7 @@ Schedule - Mindsphere
     <h5 class="fw-bold fs-md-4 fs-5 text-center mb-3">List of <span class="text-primary">Test Schedules</span></h5>
 
     <div class="d-flex w-100 justify-content-between align-items-center flex-wrap mt-4 mb-2 gap-3">
-        <form id="form-search" method="GET" autocomplete="off" action="{% url 'test-schedule' %}" class="d-flex align-items-center {% if user.is_superuser %} w-75 {% else %} w-100 {% endif %}">
+        <form id="form-search" method="GET" autocomplete="off" action="#" class="d-flex align-items-center {% if user.is_superuser %} w-75 {% else %} w-100 {% endif %}">
             <div class="form-group w-100 pe-1">
                 <input type="search" class="form-control fs-small" id="search" name="q" placeholder=" " maxlength="150" value="{{ query|default:'' }}"/>
                 <label for="search" class="form-label fs-small bg-white px-1">Search Schedule</label>
@@ -27,7 +27,19 @@ Schedule - Mindsphere
         <div class="row w-100 flex-wrap justify-content-center mt-3 mb-4">
             {% for test_schedule in test_schedules %}
                 <div class="col-4 p-3">
-                    <div class="rounded shadow-btn bg-white overflow-hidden border">
+                    <div class="test-schedule rounded shadow-btn bg-white overflow-hidden border" style="cursor: pointer;"
+                        data-id="{{ test_schedule.id }}"
+                        data-name="{{ test_schedule.Name }}"
+                        data-psychologist="{{ test_schedule.Psychologist.id }}"
+                        data-psychologist-name="{{ test_schedule.Psychologist.first_name }} {{ test_schedule.Psychologist.last_name }}"
+                        data-description="{{ test_schedule.Description }}"
+                        data-date="{{ test_schedule.Date|date:'Y-m-d\TH:i' }}"
+                        data-date-human="{{ test_schedule.Date|date:'d, M Y H:i' }}"
+                        data-capacity="{{ test_schedule.Capacity }}"
+                        data-count="{{ test_schedule.registered_count }}"
+                        data-location="{{ test_schedule.Location }}"
+                        data-image="{{ test_schedule.Image.url }}">
+
                         <img src="{{ test_schedule.Image.url }}" class="w-100 m-0 border-bottom border-secondary"
                             style="height: 200px; object-fit: cover;" alt="{{ test_schedule.Name }}">
                         <div class="mt-1 mx-3 border-bottom">
@@ -56,24 +68,14 @@ Schedule - Mindsphere
                             <div class="justify-content-end d-flex w-50 gap-1 p-0">
                                 {% if user.is_superuser %}
                                     <div class="text-end">
-                                        <button class="text-warning fs-4 update-btn border-0 bg-transparent"
-                                            data-id="{{ test_schedule.id }}"
-                                            data-name="{{ test_schedule.Name }}"
-                                            data-psychologist="{{ test_schedule.Psychologist.id }}"
-                                            data-description="{{ test_schedule.Description }}"
-                                            data-date="{{ test_schedule.Date|date:'Y-m-d\TH:i' }}"
-                                            data-capacity="{{ test_schedule.Capacity }}"
-                                            data-location="{{ test_schedule.Location }}"
-                                            data-image="{{ test_schedule.Image.url }}">
-                                            <i class="fas fa-pen"></i>
-                                        </button>
+                                        <button class="text-warning fs-4 update-btn border-0 bg-transparent"><i class="fas fa-pen"></i></button>
                                     </div>
                                     <div class="text-end">
                                         <button class="text-danger fs-4 delete-btn border-0 bg-transparent" data-url="{% url 'delete-schedule' pk=test_schedule.id %}"><i class="fas fa-trash-alt"></i></button>
                                     </div>
                                 {% else %}
                                     <div class="text-end">
-                                        <button class="btn btn-success btn-sm" data-url="{% url 'test-schedule' %}">Register</button>
+                                        <button class="btn btn-success btn-sm btn-regis" data-id="{{ test_schedule.id }}">Register</button>
                                     </div>
                                 {% endif %}
                             </div>
@@ -90,7 +92,7 @@ Schedule - Mindsphere
 </section>
 
 <div class="modal fade" id="scheduleModal" tabindex="-1" aria-labelledby="scheduleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-md">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title fw-semibold" id="scheduleModalLabel">Create Schedule</h5>
@@ -173,6 +175,51 @@ Schedule - Mindsphere
             <div class="modal-footer">
                 <button type="btn-close" class="btn fw-semibold btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 <button type="submit" class="btn fw-semibold btn-success" form="form-schedule">Save Schedule</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="scheduleDetailModal" tabindex="-1" aria-labelledby="scheduleDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white fw-semibold">
+                <h5 class="modal-title" id="scheduleDetailModalLabel">Schedule Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row w-100 mb-3">
+                    <div class="col-6 px-2">
+                        <img id="schedule-image" src="" alt="Schedule Image" class="w-100 h-100 rounded shadow" style="object-fit: cover;">
+                    </div>
+                    <div class="col-6 px-2">
+                        <h4 id="schedule-name" class="fs-4 fw-semibold"></h4>
+                        <p class="fw-semibold"> By <span id="schedule-psychologist" class="text-primary"></span></p>
+                        <p id="schedule-description"></p>
+                        <div class="row px-2">
+                            <div class="col-6 px-1">
+                                <p id="schedule-date"></p>
+                            </div>
+                            <div class="col-6 px-1 text-end">
+                                <p id="schedule-capacity"></p>
+                            </div>
+                        </div>
+                        <p>
+                            <span class="fw-semibold">Test Location:</span>  
+                            <span id="schedule-location"></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer d-none" id="regis">
+                <form id="form-regis" method="post" action="">
+                    {% csrf_token %}
+                    <input type="hidden" id="schedule-id" name="schedule-id">
+                    <div class="d-flex gap-2">
+                        <button type="btn-close" class="btn fw-semibold btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn fw-semibold btn-success" form="form-regis">Register For This Test</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -298,31 +345,39 @@ Schedule - Mindsphere
         $('#scheduleModal').on('hidden.bs.modal', function () {
             resetFormAndErrors("#form-schedule");
         });
+        
+        $('#scheduleDetailModal').on('hidden.bs.modal', function () {
+            $('#regis').addClass('d-none');
+        });
 
-        $('.update-btn').on('click', function () {
+        $('.update-btn').on('click', function (e) {
+            e.stopPropagation();
             let button = $(this);
-        
-            let scheduleId = button.data('id');
-            let name = button.data('name');
-            let psychologist = button.data('psychologist');
-            let description = button.data('description');
-            let date = button.data('date');
-            let capacity = button.data('capacity');
-            let location = button.data('location');
-            let image = button.data('image');
-        
+    
+            let parent = button.closest('.test-schedule');
+    
+            let scheduleId = parent.data('id');
+            let name = parent.data('name');
+            let psychologist = parent.data('psychologist');
+            let description = parent.data('description');
+            let date = parent.data('date');
+            let capacity = parent.data('capacity');
+            let location = parent.data('location');
+            let image = parent.data('image');
+    
             let baseUrl = "{% url 'update-schedule' 0 %}";
             let dynamicUrl = baseUrl.replace('0', scheduleId);
             $('#form-schedule').attr('data-url', dynamicUrl);
+    
             $('#scheduleModalLabel').text('Update Schedule');
-        
+    
             $('#Name').val(name);
             $('#Psychologist').val(psychologist);
             $('#Description').val(description);
             $('#Date').val(date);
             $('#Capacity').val(capacity);
             $('#Location').val(location);
-        
+    
             if (image) {
                 $('#ImagePreview').attr('src', image).removeClass('d-none');
                 $('#TextPreview').addClass('d-none');
@@ -330,7 +385,7 @@ Schedule - Mindsphere
                 $('#ImagePreview').addClass('d-none');
                 $('#TextPreview').removeClass('d-none');
             }
-        
+    
             $('#scheduleModal').modal('show');
         });        
 
@@ -380,6 +435,66 @@ Schedule - Mindsphere
             });
         });        
         
+        $('.test-schedule').on('click', function () {
+            const name = $(this).data('name');
+            const psychologist = $(this).data('psychologist-name');
+            const description = $(this).data('description');
+            const date = $(this).data('date-human');
+            const capacity = $(this).data('count') + '/' + $(this).data('capacity');
+            const location = $(this).data('location');
+            const image = $(this).data('image');
+    
+            $('#schedule-name').text(name);
+            $('#schedule-psychologist').text(psychologist);
+            $('#schedule-description').text(description);
+            $('#schedule-date').text(date);
+            $('#schedule-capacity').text(capacity);
+            $('#schedule-location').text(location);
+            $('#schedule-image').attr('src', image);
+    
+            $('#scheduleDetailModal').modal('show');
+        });
+
+        $('.btn-regis').on('click', function () {
+            const id = $(this).data('id')
+            $('#schedule-id').val(id);
+            $('#regis').removeClass('d-none');
+
+            let baseUrl = "{% url 'regis-schedule' 0 %}";
+            let dynamicUrl = baseUrl.replace('0', id);
+            $('#form-regis').attr('data-url', dynamicUrl);
+        });
+        
+        $('#form-regis').on('submit', function (e) {
+            e.preventDefault();
+            onLoading();
+            let formData = new FormData(this);
+            let formUrl = $(this).attr('data-url');
+            console.log(formUrl);
+    
+            $.ajax({
+                url: formUrl,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                success: function (response) {
+                    onLoaded();
+                    if (response.status === 'success') {
+                        SuccessPopUp(response.message);
+                    } else {
+                        ErrorPopUp(response.message);
+                    }
+                },
+                error: function (xhr) {
+                    onLoaded();
+                    ErrorPopUp('An error occurred. Please try again.');
+                }
+            });
+        });
     });    
 </script>
 

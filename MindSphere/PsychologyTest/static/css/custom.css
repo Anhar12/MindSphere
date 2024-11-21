@@ -373,8 +373,11 @@ footer a.nav-link:hover {
     background-color: rgb(14 165 233) !important;
     border: rgb(14 165 233) !important;
 } */
-.modal-lg {
+.modal-md {
     max-width: 50%;
+}
+.modal-lg {
+    max-width: 80%;
 }
 
 textarea {

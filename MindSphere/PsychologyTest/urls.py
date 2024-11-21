@@ -15,6 +15,8 @@ urlpatterns = [
     path('mind-sphere/update-schedule/<int:pk>', views.UpdateSchedule, name='update-schedule'),
     path('mind-sphere/delete-schedule/<int:pk>', views.DeleteSchedule, name='delete-schedule'),
     
+    path('mind-sphere/regis-schedule/<int:pk>', views.RegisterSchedule, name='regis-schedule'),
+    
     path('mind-sphere/psychological-test', views.PsychologicalTest, name='psychological-test'),
     path('mind-sphere/psychologist', views.PsycologistManagement, name='psychologist'),
     path('mind-sphere/history', views.History, name='history'),

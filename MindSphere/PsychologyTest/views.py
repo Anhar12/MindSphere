@@ -222,6 +222,35 @@ def DeleteSchedule(request, pk):
     return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
 
 @user_required()
+def RegisterSchedule(request, pk):
+    if request.method == 'POST':
+        schedule = TestSchedules.objects.filter(id=pk).first()
+        print(schedule)
+        if not schedule:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Test schedule not found!'
+            })
+
+        if Registrations.objects.filter(User=request.user, TestSchedule=schedule).exists():
+            return JsonResponse({
+                'status': 'error',
+                'message': 'You have already registered for this schedule!'
+            })
+        
+        total_registered = Registrations.objects.filter(TestSchedule=schedule).count()
+        if total_registered >= schedule.Capacity:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Test schedule has reached its maximum capacity.'
+            })
+        
+        registration = Registrations(User=request.user, TestSchedule=schedule)
+        registration.save()
+        
+        return JsonResponse({'status': 'success', 'message': 'Registration successful!'})
+
+@user_required()
 def PsychologicalTest(request):
     return render(request, 'MindSphere/test.html', context={'section' : 'psychological-test'})
 
