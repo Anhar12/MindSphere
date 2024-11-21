@@ -266,6 +266,7 @@ footer a.nav-link:hover {
     color: #6c757d;
     font-size: 1rem;
     transition: all 0.3s ease;
+    padding: 0;
 }
 
 .form-control:focus + .form-label,

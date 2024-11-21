@@ -106,7 +106,7 @@ def TestSchedule(request):
     ).filter(
         Date__gte=tomorrow,
         registered_count__lt=F('Capacity')
-    )
+    ).order_by('Date')
     
     if request.user.role == -1:
         return render(request, 'MindSphere/schedule.html', context={
@@ -218,7 +218,7 @@ def DeleteSchedule(request, pk):
             schedule.delete()
             return JsonResponse({'status': 'success', 'message': 'Schedule deleted successfully!'})
         except TestSchedules.DoesNotExist:
-            return JsonResponse({'status': 'error', 'message': 'schedule not found.'})
+            return JsonResponse({'status': 'error', 'message': 'Schedule not found.'})
     return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
 
 @user_required()
@@ -255,9 +255,9 @@ def PsychologicalTest(request):
     registrations = Registrations.objects.all()
     
     if request.user.role == Users.PARTICIPANT:
-        registrations = Registrations.objects.filter(User=request.user)
+        registrations = Registrations.objects.filter(User=request.user).order_by('TestSchedule__Date')
     elif request.user.role == Users.PSYCHOLOGIST:
-        registrations = Registrations.objects.filter(TestSchedule__Psychologist=request.user)
+        registrations = Registrations.objects.filter(TestSchedule__Psychologist=request.user).order_by('TestSchedule__Date', 'ParticipantNumber')
 
     serialized_data = [
         {
@@ -278,6 +278,27 @@ def PsychologicalTest(request):
         'registrations_json': serialized_data
     })
 
+@user_required()
+def DeleteRegistration(request, pk):
+    if request.method == 'DELETE':
+        try:
+            registration = Registrations.objects.get(id=pk)
+            registration.delete()
+            return JsonResponse({
+                'status': 'success', 
+                'message': 'Registration deleted successfully!'
+            })
+        except Registrations.DoesNotExist:
+            return JsonResponse({
+                'status': 'error', 
+                'message': 'Registrations not found.'
+            })
+        
+    return JsonResponse({
+        'status': 'error', 
+        'message': 'Invalid request method.'
+    })
+ 
 @admin_required()
 def PsycologistManagement(request):
     if request.method == "POST":

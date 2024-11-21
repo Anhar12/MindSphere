@@ -32,9 +32,14 @@ class Users(AbstractBaseUser, PermissionsMixin):
         (PSYCHOLOGIST, 'Psychologist'),
         (PARTICIPANT, 'Participant'),
     )
+    
+    GENDER_CHOICES = (
+        ('Male', 'Male'),
+        ('Female', 'Female'),
+    )
 
     username = models.CharField(max_length=150, unique=True)
-    email = models.EmailField(unique=True, null=True, blank=True)  # optional email
+    email = models.EmailField(unique=True, null=True, blank=True)
     first_name = models.CharField(max_length=150, blank=True, null=True)
     last_name = models.CharField(max_length=150, blank=True, null=True)
     role = models.IntegerField(choices=ROLE_CHOICES, default=PARTICIPANT)

@@ -5,12 +5,13 @@ from . import Registrations
 class Results(models.Model):
     Registration = models.ForeignKey(Registrations, on_delete=models.CASCADE)
     Date = models.DateTimeField(default=now)
-    Summary = models.TextField()
+    Summary = models.TextField(default="You're not complete this test")
     Recommendation = models.TextField(null=True, blank=True)
-    ResultNumber = models.CharField(max_length=255, unique=True)
+    ResultNumber = models.CharField(max_length=255, unique=True, null=True, blank=True)
+    IsDone = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
-        if not self.ResultNumber:
+        if not self.ResultNumber and self.IsDone:
             test_name = self.Registration.TestSchedule.id
             reg_participant_number = self.Registration.ParticipantNumber
             day = self.Date.day
