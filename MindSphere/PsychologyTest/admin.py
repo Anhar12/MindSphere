@@ -36,23 +36,5 @@ class RegisAdmin(admin.ModelAdmin):
 @admin.register(Results)
 class ResultAdmin(admin.ModelAdmin):
     list_display = ('Registration', 'Recommendation', 'ResultNumber', 'Date')
-    search_fields = ('Registration__User__username', 'Psychologist__username', 'Summary', 'ResultNumber')
+    search_fields = ('Registration__User__username', 'Registration__TestSchedule__Psychologist__username', 'Summary', 'ResultNumber')
     list_filter = ('Recommendation', 'Summary', 'Date')
-
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == "Registration":
-            if 'add' in request.path:
-                kwargs["queryset"] = Registrations.objects.filter(Status='Waiting for Results')
-            else:
-                kwargs["queryset"] = Registrations.objects.all()
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
-
-    def get_fields(self, request, obj=None):
-        if 'add' in request.path:
-            return ('Registration', 'Psychologist', 'Recommendation', 'notes')
-        return ('Registration', 'Psychologist', 'Recommendation', 'Summary', 'ResultNumber', 'Date', 'notes')
-
-    def get_readonly_fields(self, request, obj=None):
-        if 'add' in request.path:
-            return ()
-        return ('ResultNumber', 'Date', 'Summary', 'Recommendation')

@@ -6,7 +6,7 @@ Test Psychologist - Mindsphere
 
 {% block content %}
 <section class="w-100 px-4 pt-5 pt-md-3">
-    <h5 class="fw-bold fs-md-4 fs-5 text-center">Your <span class="text-primary">psychological</span> test <span class="text-primary">schedule</span></h5>
+    <h5 class="fw-bold fs-md-4 fs-5 text-center">Your <span class="text-primary">psychological test</span> schedule</span></h5>
 
     <form id="form-search" method="GET" autocomplete="off" action="#" class="d-flex mt-3 align-items-center w-100">
         <div class="form-group w-100 pe-1">
@@ -65,16 +65,16 @@ Test Psychologist - Mindsphere
                     </div>
 
                     <div class="my-1 w-100">
-                        <div class="text-danger d-none text-end w-100 fs-smaller ps-1 mb-1" id="Recomendation_error"></div>
+                        <div class="text-danger d-none text-end w-100 fs-smaller ps-1 mb-1" id="Recommendation_error"></div>
                         <div class="form-group w-100 position-relative">
-                            <label for="Recomendation" class="fs-small bg-white px-1">Recomendation</label>
-                            <textarea class="form-control fs-smaller" id="Recomendation" name="Recomendation" rows="6"></textarea>
+                            <label for="Recommendation" class="fs-small bg-white px-1">Recommendation</label>
+                            <textarea class="form-control fs-smaller" id="Recommendation" name="Recommendation" rows="6"></textarea>
                         </div>
                     </div>
                     
                     <div class="my-1 w-100">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="True" checked id="IsDone">
+                            <input class="form-check-input" type="checkbox" value="True" checked name="IsDone" id="IsDone">
                             <label class="form-check-label" style="font-size: 14px;" for="IsDone">
                                 Is it done correctly?
                             </label>
@@ -92,6 +92,16 @@ Test Psychologist - Mindsphere
 
 <script>
     $(document).ready(function () {
+        function onLoading() {
+            $('#loading').removeClass('d-none');
+            $('.overlay').removeClass('d-none');
+        }
+
+        function onLoaded() {
+            $('#loading').addClass('d-none');
+            $('.overlay').addClass('d-none');
+        }
+
         function SuccessPopUp(message){
             Swal.fire({
                 icon: 'success',
@@ -156,6 +166,9 @@ Test Psychologist - Mindsphere
                                 $('#resultModal').modal('show');
                                 $('#form-result').find('#name').val(params.data.name);
                                 $('#form-result').find('#test').val(params.data.schedule_name);
+                                let baseUrl = "{% url 'add-result' 0 %}";
+                                let dynamicUrl = baseUrl.replace('0', params.data.id);
+                                $('#form-result').attr('data-url', dynamicUrl);
                             });
                             buttonContainer.appendChild(editButton);
                         {% elif user.role == 2 %}
@@ -201,7 +214,7 @@ Test Psychologist - Mindsphere
                         {% endif %}
                         return buttonContainer;
                     },
-                    width: 100,
+                    width: 75,
                     filter: false,
                     sortable: false,
                 },
@@ -215,31 +228,31 @@ Test Psychologist - Mindsphere
                     headerName: 'Psychological Test',
                     field: 'schedule_name',
                     flex: 1,
-                    minWidth: 450
+                    minWidth: 300
                 },
                 {
                     headerName: 'Psychologist',
                     field: 'psychologist',
                     flex: 1,
-                    minWidth: 300
+                    minWidth: 250
                 },
                 {
                     headerName: 'Number',
                     field: 'number',
-                    width: 150,
+                    width: 90,
                     filter: false
                 },
                 {
                     headerName: 'Location',
                     field: 'location',
                     flex: 1,
-                    minWidth: 300
+                    minWidth: 250
                 },
                 {
                     headerName: 'Date',
                     field: 'date',
                     flex: 1,
-                    minWidth: 280,
+                    minWidth: 300,
                     valueFormatter: formatDate
                 },
                 {
@@ -270,17 +283,54 @@ Test Psychologist - Mindsphere
         $('#loading-spinner').addClass('d-none');
         $('#myGrid').removeClass('d-none');
 
+        $('#resultModal').on('hidden.bs.modal', function () {
+            $('#form-result').find('#Summary').val('').prop("disabled", false);
+            $('#form-result').find('#Recommendation').val('').prop("disabled", false);
+            $('#form-result').find('#IsDone').prop('checked', true);
+        });
+
         $('#IsDone').change(function(){
             var checked = $(this).is(':checked');
             if (checked) {
                 $('#Summary').prop("disabled", false);
-                $('#Recomendation').prop("disabled", false);
+                $('#Recommendation').prop("disabled", false);
                 $('#Summary').val('');
             } else {
                 $('#Summary').prop("disabled", true);
-                $('#Recomendation').prop("disabled", true);
+                $('#Recommendation').prop("disabled", true);
+                $('#Recommendation').val('');
                 $('#Summary').val("You're not complete this test");
             }
+        });
+
+        $('#form-result').on('submit', function (e) {
+            e.preventDefault();
+            onLoading();
+            let formData = new FormData(this);
+            let formUrl = $(this).attr('data-url');
+    
+            $.ajax({
+                url: formUrl,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                success: function (response) {
+                    onLoaded();
+                    if (response.status === 'success') {
+                        SuccessPopUp(response.message);
+                    } else {
+                        ErrorPopUp(response.message);
+                    }
+                },
+                error: function (xhr) {
+                    onLoaded();
+                    ErrorPopUp('An error occurred. Please try again.');
+                }
+            });
         });
     });
 </script>

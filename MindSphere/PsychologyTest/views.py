@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from .decorators import admin_required, login_required, user_required, ParticipantPsychologist_required
+from .decorators import admin_required, login_required, user_required, ParticipantPsychologist_required, psychologist_required
 from django.http import JsonResponse
-from .forms import SignUpForm, ScheduleForm
+from django.core.paginator import Paginator 
+from .forms import SignUpForm, ScheduleForm, ResultForm
 from .models import Registrations, Users, Results, TestSchedules
 from django.core.exceptions import ValidationError
 from django.db.models import Q
@@ -16,6 +17,27 @@ def Home(request):
         'section' : 'home'
     }
     return render(request, 'Home/index.html', context)
+
+def ScheduleList(request):
+    today = now().date()
+    tomorrow = today + timedelta(days=1)
+    
+    schedules = TestSchedules.objects.annotate(
+        registered_count=Count('registrations')
+    ).filter(
+        Date__gte=tomorrow,
+        registered_count__lt=F('Capacity')
+    ).order_by('-Date')
+    
+    paginator = Paginator(schedules, 6)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    context = {
+        'section': 'schedule-list',
+        'test_schedules': page_obj,
+    }
+    return render(request, 'Home/schedule.html', context)
 
 def About(request):
     context = {
@@ -106,18 +128,22 @@ def TestSchedule(request):
     ).filter(
         Date__gte=tomorrow,
         registered_count__lt=F('Capacity')
-    ).order_by('Date')
+    ).order_by('-Date')
+    
+    paginator = Paginator(schedules, 6)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     
     if request.user.role == -1:
         return render(request, 'MindSphere/schedule.html', context={
             'section' : 'test-schedule', 
             'psychologists' : psychologists,
-            'test_schedules' : schedules,
+            'test_schedules' : page_obj,
         })
     
     return render(request, 'MindSphere/schedule.html', context={
         'section' : 'test-schedule',
-        'test_schedules' : schedules,
+        'test_schedules' : page_obj,
     })
 
 @admin_required()
@@ -144,7 +170,7 @@ def AddSchedule(request):
         'status': 'error',
         'message': 'Invalid request method!',
     })
-    
+
 @admin_required()
 def UpdateSchedule(request, pk):
     if request.method == 'POST':
@@ -225,7 +251,6 @@ def DeleteSchedule(request, pk):
 def RegisterSchedule(request, pk):
     if request.method == 'POST':
         schedule = TestSchedules.objects.filter(id=pk).first()
-        print(schedule)
         if not schedule:
             return JsonResponse({
                 'status': 'error',
@@ -255,9 +280,9 @@ def PsychologicalTest(request):
     registrations = Registrations.objects.all()
     
     if request.user.role == Users.PARTICIPANT:
-        registrations = Registrations.objects.filter(User=request.user).order_by('TestSchedule__Date')
+        registrations = Registrations.objects.filter(User=request.user, Status='Waiting for Result').order_by('TestSchedule__Date')
     elif request.user.role == Users.PSYCHOLOGIST:
-        registrations = Registrations.objects.filter(TestSchedule__Psychologist=request.user).order_by('TestSchedule__Date', 'ParticipantNumber')
+        registrations = Registrations.objects.filter(TestSchedule__Psychologist=request.user, Status='Waiting for Result').order_by('TestSchedule__Date', 'ParticipantNumber')
 
     serialized_data = [
         {
@@ -298,6 +323,43 @@ def DeleteRegistration(request, pk):
         'status': 'error', 
         'message': 'Invalid request method.'
     })
+
+@psychologist_required() 
+def AddResult(request, pk):
+    if request.method == 'POST':
+        form = ResultForm(request.POST)
+        if form.is_valid():
+            registration = Registrations.objects.get(id=pk)
+            if not registration:
+                return JsonResponse({
+                    'status': 'error', 
+                    'message': 'Registration not found.'
+                })
+            
+            result = form.save(commit=False)
+            result.IsDone = True if request.POST.get('IsDone') == 'True' else False
+            result.Registration = registration
+            
+            form.save()
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Result added successfully!'
+            })
+        else:
+            errors = {}
+            for field, error_list in form.errors.items():
+                errors[field] = error_list
+                
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Failed finish the result! please try again',
+                'errors': errors,
+            })
+            
+    return JsonResponse({
+        'status': 'error',
+        'message': 'Invalid request method.'
+    })
  
 @admin_required()
 def PsycologistManagement(request):
@@ -330,5 +392,30 @@ def PsycologistManagement(request):
 
 @login_required()
 def History(request):
-    return render(request, 'MindSphere/history.html', context={'section' : 'history'})
+    result = Results.objects.all().order_by('-Date', '-ResultNumber')
+    
+    if request.user.role == Users.PARTICIPANT:
+        result = Results.objects.filter(Registration__User=request.user).order_by('-Date', '-ResultNumber')
+    elif request.user.role == Users.PSYCHOLOGIST:
+        result = Results.objects.filter(Registration__TestSchedule__Psychologist=request.user).order_by('-Date', '-ResultNumber')
+    
+    serialized_data = [
+        {
+            'id': res.id,
+            'name': f"{res.Registration.User.first_name} {res.Registration.User.last_name}",
+            'schedule_name': res.Registration.TestSchedule.Name,
+            'psychologist': f"{res.Registration.TestSchedule.Psychologist.first_name} {res.Registration.TestSchedule.Psychologist.last_name}",
+            'number': res.ResultNumber,
+            'summary': res.Summary,
+            'recommendation': res.Recommendation,
+            'date': res.Date.isoformat(),
+            'status': 'Completed' if res.IsDone else 'Not Completed'
+        }
+        for res in result
+    ]
+    
+    return render(request, 'MindSphere/history.html', context={
+        'section' : 'history',
+        'result_json': serialized_data
+    })
 

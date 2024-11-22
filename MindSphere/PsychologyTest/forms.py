@@ -24,3 +24,14 @@ class ScheduleForm(forms.ModelForm):
     class Meta:
         model = TestSchedules
         fields = ['Name', 'Psychologist', 'Description', 'Date', 'Location', 'Capacity', 'Image']
+
+class ResultForm(forms.ModelForm):
+    class Meta:
+        model = Results
+        fields = ['Summary', 'Recommendation']
+        
+    def __init__(self, *args, **kwargs):
+        super(ResultForm, self).__init__(*args, **kwargs)
+        
+        self.fields['Summary'].required = False
+        self.fields['Recommendation'].required = False

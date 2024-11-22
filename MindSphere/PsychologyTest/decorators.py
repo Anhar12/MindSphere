@@ -26,6 +26,18 @@ def user_required():
         return _wrapped_view
     return decorator
 
+def psychologist_required():
+    def decorator(view_func):
+        @wraps(view_func)
+        def _wrapped_view(request, *args, **kwargs):
+            if request.user.is_authenticated and not request.user.is_superuser and not request.user.is_staff and request.user.role == 1:
+                return view_func(request, *args, **kwargs)
+            else:
+                messages.error(request, 'You must signed in as psychologist to access this page.')
+                return redirect('sign-in')
+        return _wrapped_view
+    return decorator
+
 def ParticipantPsychologist_required():
     def decorator(view_func):
         @wraps(view_func)

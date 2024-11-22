@@ -3,6 +3,7 @@ from . import views
 
 urlpatterns = [
     path('', views.Home, name='home'),
+    path('schedule-list', views.ScheduleList, name='schedule-list'),
     path('about', views.About, name='about'),
     path('contact', views.Contact, name='contact'),
     path('sign-in', views.SignIn, name='sign-in'),
@@ -19,7 +20,9 @@ urlpatterns = [
     path('mind-sphere/delete-regis/<int:pk>', views.DeleteRegistration, name='delete-regis'),
     
     path('mind-sphere/psychological-test', views.PsychologicalTest, name='psychological-test'),
-    path('mind-sphere/psychologist', views.PsycologistManagement, name='psychologist'),
-    path('mind-sphere/history', views.History, name='history'),
+    path('mind-sphere/add-result/<int:pk>', views.AddResult, name='add-result'),
     
+    path('mind-sphere/psychologist', views.PsycologistManagement, name='psychologist'),
+    
+    path('mind-sphere/history', views.History, name='history'),   
 ]

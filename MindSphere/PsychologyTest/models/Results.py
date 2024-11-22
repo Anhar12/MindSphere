@@ -5,7 +5,7 @@ from . import Registrations
 class Results(models.Model):
     Registration = models.ForeignKey(Registrations, on_delete=models.CASCADE)
     Date = models.DateTimeField(default=now)
-    Summary = models.TextField(default="You're not complete this test")
+    Summary = models.TextField(default="You're not completed this test")
     Recommendation = models.TextField(null=True, blank=True)
     ResultNumber = models.CharField(max_length=255, unique=True, null=True, blank=True)
     IsDone = models.BooleanField(default=False)
@@ -20,11 +20,13 @@ class Results(models.Model):
 
             roman_month = self.convert_to_roman(month)
 
-            self.ResultNumber = f"MS/{test_name}/{day}/{roman_month}/{year}/{reg_participant_number}"
+            self.ResultNumber = f"MS/{test_name}/{year}/{roman_month}/{day}/{reg_participant_number}"
         
-        registration = self.Registration
-        registration.Status = 'Finished'
-        registration.save()
+        if not self.IsDone:
+            self.ResultNumber = "Not completed"
+        
+        self.Registration.Status = 'Finished'
+        self.Registration.save()
         
         super().save(*args, **kwargs)
 
@@ -36,4 +38,4 @@ class Results(models.Model):
         return roman_numerals.get(number, '')
 
     def __str__(self):
-        return f'Result for {self.registration}'
+        return f'Result for {self.Registration}'
