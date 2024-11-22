@@ -241,33 +241,39 @@ Schedule - Mindsphere
 </div>
 
 <div class="modal fade" id="scheduleDetailModal" tabindex="-1" aria-labelledby="scheduleDetailModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-md">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white fw-semibold">
                 <h5 class="modal-title" id="scheduleDetailModalLabel">Schedule Details</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="row w-100 mb-3">
-                    <div class="col-6 px-2">
-                        <img id="schedule-image" src="" alt="Schedule Image" class="w-100 h-100 rounded shadow" style="object-fit: cover;">
+                <div class="w-100">
+                    <div class="ratio ratio-21x9 mb-3">
+                        <img id="schedule-image" src="" alt="Schedule Image" class="w-100 h-100 rounded border" style="object-fit: cover;">
                     </div>
-                    <div class="col-6 px-2">
+                    <div class="px-2 d-flex flex-column">
                         <h4 id="schedule-name" class="fs-4 fw-semibold"></h4>
-                        <p class="fw-semibold"> By <span id="schedule-psychologist" class="text-primary"></span></p>
-                        <p id="schedule-description"></p>
                         <div class="row px-2">
                             <div class="col-6 px-1">
-                                <p id="schedule-date"></p>
+                                <p class="fw-semibold mb-2"> By <span id="schedule-psychologist" class="text-primary"></span></p>
                             </div>
                             <div class="col-6 px-1 text-end">
-                                <p id="schedule-capacity"></p>
+                                <p id="schedule-capacity" class="mb-2"></p>
                             </div>
                         </div>
-                        <p>
-                            <span class="fw-semibold">Test Location:</span>  
-                            <span id="schedule-location"></span>
-                        </p>
+                        <p id="schedule-description" class="border-bottom mb-2 pb-2 text-justify"></p>
+                        <div class="row px-2">
+                            <div class="col-6 px-1">
+                                <p class="m-0">
+                                    <span class="fw-semibold">Test Location:</span>  
+                                    <span id="schedule-location"></span>
+                                </p>
+                            </div>
+                            <div class="col-6 px-1 text-end">
+                                <p id="schedule-date" class="m-0"></p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -6,6 +6,8 @@ Schedule List - MindSphere
 
 {% block content %}
 <section class="w-100 px-4 container" style="margin-top: 100px;">
+    <h2 class="fw-bold text-center mb-4">LIST OF <span class="text-primary">PSYCHOLOGICAL TEST</span></span></h5>
+
     <div class="d-flex w-100 justify-content-between align-items-center flex-wrap mt-4 mb-0 gap-3">
         <h4 class=" fw-semibold">Schedule List</h4>
         <form id="form-search" method="GET" autocomplete="off" action="#" class="d-flex align-items-center w-75">
@@ -18,7 +20,7 @@ Schedule List - MindSphere
     </div>
 
     {% if test_schedules %}
-        <div class="row w-100 justify-content-center mb-3">
+        <div class="flex-wrap w-100 d-flex justify-content-center mb-3">
             {% for test_schedule in test_schedules %}
                 <div class="col-4 p-3">
                     <div class="test-schedule rounded shadow-btn bg-white overflow-hidden border" style="cursor: pointer;"
@@ -58,6 +60,11 @@ Schedule List - MindSphere
                                 <p class="m-0" style="font-size: 14px;">
                                     {{ test_schedule.Date|date:"d, M Y H:i" }}
                                 </p>
+                            </div>
+                            <div class="justify-content-end d-flex w-50 gap-1 p-0">
+                                <div class="text-end">
+                                    <button class="btn btn-success btn-sm btn-regis">Register</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -130,4 +137,88 @@ Schedule List - MindSphere
         </div>
     {% endif %}
 </section>
+
+<div class="modal fade" id="scheduleDetailModal" tabindex="-1" aria-labelledby="scheduleDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white fw-semibold">
+                <h5 class="modal-title" id="scheduleDetailModalLabel">Schedule Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="w-100">
+                    <div class="ratio ratio-21x9 mb-3">
+                        <img id="schedule-image" src="" alt="Schedule Image" class="w-100 h-100 rounded border" style="object-fit: cover;">
+                    </div>
+                    <div class="px-2 d-flex flex-column">
+                        <h4 id="schedule-name" class="fs-4 fw-semibold"></h4>
+                        <div class="row px-2">
+                            <div class="col-6 px-1">
+                                <p class="fw-semibold mb-2"> By <span id="schedule-psychologist" class="text-primary"></span></p>
+                            </div>
+                            <div class="col-6 px-1 text-end">
+                                <p id="schedule-capacity" class="mb-2"></p>
+                            </div>
+                        </div>
+                        <p id="schedule-description" class="border-bottom mb-2 pb-2 text-justify"></p>
+                        <div class="row px-2">
+                            <div class="col-6 px-1">
+                                <p class="m-0">
+                                    <span class="fw-semibold">Test Location:</span>  
+                                    <span id="schedule-location"></span>
+                                </p>
+                            </div>
+                            <div class="col-6 px-1 text-end">
+                                <p id="schedule-date" class="m-0"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('.test-schedule').on('click', function () {
+            const name = $(this).data('name');
+            const psychologist = $(this).data('psychologist-name');
+            const description = $(this).data('description');
+            const date = $(this).data('date-human');
+            const capacity = $(this).data('count') + '/' + $(this).data('capacity');
+            const location = $(this).data('location');
+            const image = $(this).data('image');
+    
+            $('#schedule-name').text(name);
+            $('#schedule-psychologist').text(psychologist);
+            $('#schedule-description').text(description);
+            $('#schedule-date').text(date);
+            $('#schedule-capacity').text(capacity);
+            $('#schedule-location').text(location);
+            $('#schedule-image').attr('src', image);
+    
+            $('#scheduleDetailModal').modal('show');
+        });
+
+        $('.btn-regis').on('click', function (e) {
+            e.stopPropagation();
+            
+            Swal.fire({
+                title: 'You have to sign in first',
+                icon: 'info',
+                showCancelButton: true,
+                cancelButtonColor: '#6C757D',
+                confirmButtonColor: '#157347',
+                confirmButtonText: 'Ok'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "{% url 'sign-in' %}";
+                }
+            });
+        });        
+        
+    });
+</script>
+
 {% endblock %}
