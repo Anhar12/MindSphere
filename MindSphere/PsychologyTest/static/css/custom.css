@@ -1,37 +1,84 @@
 * {
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: 'Poppins', sans-serif;
 }
+
+#hero {
+    position: relative; /* Membuat elemen menjadi referensi untuk elemen pseudo */
+    background-image: url('../images/bg-hero.png'); /* URL gambar */
+    background-size: cover; /* Gambar akan memenuhi seluruh area */
+    background-position: bottom right; /* Gambar akan dipusatkan */
+    background-repeat: no-repeat; /* Hindari pengulangan gambar */
+    height: 100vh; /* Tinggi sesuai layar pengguna */
+    width: 100%; /* Lebar penuh */
+    max-width: 100%; /* Hilangkan batas lebar Bootstrap */
+    padding: 0; /* Menghilangkan padding */
+}
+
+#hero::before {
+    content: ""; /* Membuat elemen pseudo terlihat */
+    position: absolute; /* Posisi absolut relatif ke elemen induk */
+    top: 0;
+    left: 0;
+    width: 43%; /* Atur lebar kotak */
+    height: 100%; /* Tinggi kotak penuh */
+    background-color: #036168; /* Warna kotak */
+    opacity: 0.7; /* Opasitas 70% */
+    z-index: 1; /* Memastikan elemen pseudo berada di atas background */
+}
+
+.hero-content {
+    position: absolute; /* Posisi relatif terhadap elemen induk */
+    top: 55%; /* Menempatkan di tengah secara vertikal */
+    left: 21.5%; /* Menempatkan di tengah kotak secara horizontal */
+    transform: translate(-50%, -50%); /* Koreksi posisi agar benar-benar di tengah */
+    color: #fff; /* Warna teks default */
+    z-index: 2; /* Memberi prioritas lebih tinggi dari pseudo-elemen */
+    max-width: 400px; /* Membatasi lebar konten */
+}
+
+#hero .container {
+    position: relative; /* Memastikan elemen lain bisa diatur z-index-nya */
+    z-index: 2; /* Konten berada di atas pseudo-element */
+}
+
+
+#hero.container.hero-bg {
+    padding: 0;
+}
+
+
+
 
 /* bootstrap custom start */
 .bg-primary {
-    background: rgb(14 165 233) !important;
+    background: #036168 !important;
 }
 
 .text-primary {
-    color: rgb(14 165 233) !important;
+    color: #036168 !important;
 }
 
 .border-primary {
-    border-color: rgb(14 165 233) !important;
+    border-color: #036168 !important;
 }
 
 .btn-outline-primary {
-    border-color: rgb(14 165 233) !important;
-    color: rgb(14 165 233) !important;
+    border-color: #036168 !important;
+    color: #036168 !important;
 }
 
 .btn-outline-primary:hover {
-    background: rgb(14 165 233) !important;
+    background: #036168 !important;
     color: var(--bs-light) !important;
 }
 
 .btn-outline-light:hover {
-    color: rgb(14 165 233) !important; 
+    color: #036168 !important; 
 }
 
 .btn-primary {
-    background: rgb(14 165 233) !important;
-    border: rgb(14 165 233) !important;
+    background: #036168 !important;
+    border: #036168 !important;
 }
 
 .btn-primary:hover {
@@ -58,13 +105,13 @@
     position: relative;
     display: inline-block;
     padding-bottom: 5px; 
-    color: rgb(125 211 252) !important;
+    color: #66aeac !important;
     transition: color 0.3s ease-in-out;
 
 }
 
 .navbar .nav-item .active {
-    color: rgb(14 165 233) !important;
+    color: #036168 !important;
 }
 
 .navbar .nav-link:not(.active)::after {
@@ -72,7 +119,7 @@
     position: absolute;
     width: 0;
     height: 2px; 
-    background-color: rgb(14 165 233); 
+    background-color: #036168; 
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
@@ -84,7 +131,7 @@
 }
 
 .navbar .nav-link:not(.active):hover {
-    color: rgb(14 165 233) !important; 
+    color: #036168 !important; 
 }
 
 #sidebar {
@@ -102,7 +149,7 @@
     position: relative;
     display: inline-block;
     padding-bottom: 5px; 
-    color: rgb(125 211 252) !important;
+    color: #66aeac !important;
     transition: color 0.5s ease-in-out;
 
 }
@@ -168,7 +215,7 @@
     bottom: 0;
     left: 0;
     right: 0;
-    background-color: rgb(14 165 233); /* Primary color */
+    background-color: #036168; /* Primary color */
     color: #fff;
     transition: transform 0.4s ease;
     transform: translateY(75.8%);
@@ -226,7 +273,7 @@
 }
 
 .shadow-btn {
-    box-shadow: -2px 3px 0 0 rgb(14 165 233);
+    box-shadow: -2px 3px 0 0 #036168;
     transition: all 0.3s ease-in-out
 }
 
@@ -256,7 +303,7 @@ footer a.nav-link:hover {
 .form-control:focus {
     outline: none;
     box-shadow: none; 
-    border-color: rgb(14 165 233); 
+    border-color: #036168; 
 }
 
 .form-label {
@@ -274,7 +321,7 @@ footer a.nav-link:hover {
     top: -10px;
     left: 0.3rem;
     font-size: 0.7rem !important;
-    color: rgb(14 165 233);
+    color: #036168;
 }
 
 .form-label {
@@ -341,7 +388,7 @@ footer a.nav-link:hover {
 }
 
 .ag-theme-quartz .ag-row:hover {
-    background-color: rgb(125 211 252);
+    background-color: #66aeac;
     color: #fff;
 }
 
@@ -371,8 +418,8 @@ footer a.nav-link:hover {
 }
 /* 
 .swal2-confirm {
-    background-color: rgb(14 165 233) !important;
-    border: rgb(14 165 233) !important;
+    background-color: #036168 !important;
+    border: #036168 !important;
 } */
 .modal-md {
     max-width: 50%;
@@ -399,6 +446,90 @@ textarea {
     background-color: rgba(14, 165, 233, 0.1);
     color: rgb(14, 165, 233);
 }
+
+.bg-philosophy ul.text-start {
+    text-align: justify;
+    width: 100%; /* Pastikan lebar ul mencakup seluruh kontainer */
+    display: block; /* Memastikan ul menjadi block-level element */
+}
+
+
+.bg-philosophy ul.text-start li {
+    padding: 0; /* Atur padding sesuai kebutuhan */
+    margin: 0;  /* Atur margin sesuai kebutuhan */
+}
+
+.text-container {
+    width: 100%;
+    display: block;
+    text-align: justify;
+}
+
+.image-container {
+    width: 100%; /* Mengikuti lebar kolom */
+    aspect-ratio: 1 / 1; /* Menjaga rasio 1:1 */
+    overflow: hidden;
+}
+
+.image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Menjaga proporsi gambar */
+}
+
+#contact    -us {
+    background-color: #f8f9fa;
+}
+
+.contact-details {
+    font-size: 16px;
+    color: #333;
+}
+
+.contact-icons p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #555;
+}
+
+.social-media {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.social-icons-row {
+    display: flex;
+    justify-content: center;
+    gap: 0; /* Tidak ada jarak antar kotak */
+    overflow: hidden;
+}
+
+.social-icon {
+    width: calc(100% / 6); /* Setiap ikon mengambil 1/6 dari lebar baris */
+    aspect-ratio: 1 / 1; /* Menjaga ikon tetap berbentuk kotak */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 24px;
+    text-decoration: none;
+    background-color: #036168; /* Warna default */
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.social-icon:nth-child(odd) {
+    background-color: #036168; /* Warna kotak ganjil */
+}
+
+.social-icon:nth-child(even) {
+    background-color: #66aeac; /* Warna kotak genap */
+}
+
+.social-icon:hover {
+    transform: scale(1.1); /* Efek membesar saat hover */
+}
+
+
 
 @media only screen and (max-width: 768px) {
     #sidebar-mcu {
@@ -430,5 +561,41 @@ textarea {
 
     #signup-form {
         width: 85% !important;
+    }
+
+    .custom-container {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+}
+
+@media (max-width: 1024px) {
+    #hero {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px; /* Opsional: Tambahkan ruang di sekitar konten */
+        height: 100vh; /* Pastikan elemen memenuhi tinggi layar */
+        background-image: none;
+    }
+
+    #hero::before {
+        width: 100%; /* Buat elemen pseudo penuh */
+        height: 100%; /* Tinggi penuh */
+        left: 0;
+        top: 0;
+        opacity: 1; /* Opasitas 100% */
+    }
+
+    .hero-content {
+        position: relative; /* Ubah ke relative agar reset */
+        top: unset; /* Hilangkan posisi absolut */
+        left: unset; /* Hilangkan posisi absolut */
+        transform: none; /* Hilangkan transformasi */
+        max-width: 600px; /* Sesuaikan lebar konten */
+        text-align: center; /* Teks rata tengah */
+        z-index: 2; /* Tetap di atas elemen pseudo */
+        margin: 20px;
+        margin-top: 100px;
     }
 }
