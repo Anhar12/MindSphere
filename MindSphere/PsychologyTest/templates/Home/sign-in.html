@@ -14,96 +14,188 @@
     {% load static %}
 
     <link rel="stylesheet" href="{% static 'css/custom.css' %}">
-    <link href='https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;600;700&display=swap' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;600;700&display=swap'
+        rel='stylesheet'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+        .login {
+            min-height: 100vh;
+            width: 100%;
+            /* background-image: url(../image/background-blur.jpg); */
+            background-color: #66aeac;
+            background-position: center;
+            background-size: cover;
+            position: relative;
+        }
+
+        .login-container {
+            background-color: #036168;
+            border-radius: 10px;
+            box-shadow: #00000059 0px 5px 15px;
+            width: 768px;
+            min-height: 500px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .login-overlay {
+            position: absolute;
+            top: 0;
+            right: 50%;
+            width: 50%;
+            height: 100%;
+        }
+
+        .overlay-logo {
+            background-color: #036168;
+            border-start-start-radius: 10px;
+            border-end-start-radius: 10px;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+        }
+
+        .overlay-content {
+            max-width: 100%;
+            height: auto;
+            margin: 0 auto;
+            padding: 10px;
+            position: relative;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .login-form {
+            background-color: #FFF;
+            border-start-end-radius: 10px;
+            border-end-end-radius: 10px;
+            position: absolute;
+            top: 50%;
+            transform: translate(0, -50%);
+            left: 50%;
+            width: 50%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            justify-content: center;
+        }
+
+        @media screen and (max-width: 784px) {
+            .login-container {
+                width: 90%;
+
+            }
+
+            .login-overlay {
+                display: none;
+            }
+
+            .login-form {
+                left: 0;
+                width: 100%;
+                border-radius: 10px;
+            }
+
+            .login-form-content {
+                padding: 20px;
+            }
+        }
+    </style>
 </head>
 
-<body class="">
-    <section class="min-vh-100 w-100 d-flex">
-        <div class="w-md-50 w-100 bg-primary d-none d-md-flex align-items-center">
-            <div class="w-100 w-md-50 bg-primary text-white transition hero-left d-none d-md-flex flex-column justify-content-center">
-                
-                <h2 id="hero-title" class="text-center mb-3 fw-bold transition">Explore the Depths of Your Mind</h2>
-                <div class="d-flex justify-content-center">
-                    <img id="portal-image" src="static/images/signin-hero.png" class="w-50" height="230" alt="Sign In MCU">
+<body>
+    <section class="login">
+        <div class='login-container'>
+            <div class="login-overlay">
+                <div class="overlay-logo">
+                    <div class="overlay-content">
+                        <p><img src="static/images/LogoLight.png" alt="Logo MindSphere" width="200px"></p>
+                    </div>
                 </div>
-                <p id="hero-text" class="text-center fw-bold mt-3 mb-0">Stay informed about your Psychological Test results</p>
             </div>
-        </div>
-    
-        <div class="w-md-50 w-100 bg-primary d-flex align-items-center justify-content-center">
-            <div id="signin-form" class="text-dark bg-white d-flex flex-column justify-content-center shadow rounded-3 px-4 py-5 gap-1" style="width:60%;">
+            <div class="login-form">
                 <div class="d-flex justify-content-center gap-2 align-items-center">
-                    <img src="static/images/LogoPrimary.png" width="60px" alt="">
-                    <h4 class="text-center mb-0 mt-2 fw-bold">Welcome Back!</h4>
+                    <!-- <img src="static/images/LogoPrimary.png" width="60px" alt=""> -->
+                    <h2 class="text-center mb-0 mt-2 fw-bold" style="color: #036168;">Welcome Back!</h2>
                 </div>
                 <p class="text-center fst-italic text-secondary mb-4" style="font-size: small;">Sign in to access your psychological reports</p>
-                <form id="form-signin" method="POST" autocomplete="off" action="" class="d-flex flex-column align-items-center gap-2 mt-2">
+                <form id="form-signin" method="POST" autocomplete="off" action=""
+                    class="d-flex flex-column align-items-center gap-2 mt-2">
                     {% csrf_token %}
                     <div class="text-danger d-none text-end w-100 fs-smaller ps-1 mb-1" id="error-message"></div>
-    
+
                     <div class="form-group w-100">
-                        <input type="text" class="form-control pe-5 fs-small" id="username" name="username" required placeholder=" " maxlength="150"/>
+                        <input type="text" class="form-control pe-5 fs-small" id="username" name="username" required
+                            placeholder=" " maxlength="150" />
                         <label for="username" class="form-label fs-small bg-white px-1">Username</label>
-                        <label for="username" class="position-absolute top-50 translate-middle" style="right: 3px"><i class="text-primary fas fa-user"></i></label>
+                        <label for="username" class="position-absolute top-50 translate-middle" style="right: 3px"><i
+                                class="text-primary fas fa-user"></i></label>
                     </div>
-    
+
                     <div class="form-group w-100 mt-2">
-                        <input type="password" class="form-control pe-5 password-input fs-small" id="password" name="password" required placeholder=" " maxlength="150"/>
+                        <input type="password" class="form-control pe-5 password-input fs-small" id="password"
+                            name="password" required placeholder=" " maxlength="150" />
                         <label for="password" class="form-label fs-small bg-white px-1">Password</label>
-                        <label for="password" class="position-absolute top-50 translate-middle" style="right: 0px"><i id="toggle-password" class="text-primary fas fa-eye"></i></label>
+                        <label for="password" class="position-absolute top-50 translate-middle" style="right: 0px"><i
+                                id="toggle-password" class="text-primary fas fa-eye"></i></label>
                     </div>
-    
+
                     <div class="w-100 row mt-4">
-                        <div class="col-6 px-1">
+                        <div class="col-6 ps-0 pe-1">
                             <a href="{% url 'home' %}" class="btn btn-secondary w-100 fs-small fw-bold">Back</a>
                         </div>
-                        <div class="col-6 px-1">
+                        <div class="col-6 ps-1 pe-0">
                             <button type="submit" class="btn btn-primary w-100 fs-small fw-bold">Sign In</button>
                         </div>
                     </div>
                 </form>
-    
-                <div class="d-flex justify-content-center gap-2 mt-2">
-                    <p class="text-center text-secondary my-auto fs-small">Don't have an account? </p>
-                    <a href="{% url 'sign-up' %}" class="btn border-0 p-0 fw-bold text-primary btn-portal my-auto fs-small">Sign Up</a>
+
+                <div class="d-flex justify-content-center gap-1 mt-3">
+                    <p class="text-center text-secondary my-auto fs-small">Don't have an account yet? </p>
+                    <a href="{% url 'sign-up' %}"
+                        class="btn border-0 p-0 fw-bold text-primary btn-portal my-auto fs-small">Sign Up</a>
                 </div>
             </div>
         </div>
     </section>
-
     {% include 'loading-spinner.html' %}
-     
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     {% if messages %}
-        {% for message in messages %}
-            <script>
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Access Denied',
-                    text: '{{ message }}',
-                    confirmButtonText: 'Ok',
-                    confirmButtonColor: '#DC3545',
-                });
-            </script>
-        {% endfor %}
+    {% for message in messages %}
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Access Denied',
+            text: '{{ message }}',
+            confirmButtonText: 'Ok',
+            confirmButtonColor: '#DC3545',
+        });
+    </script>
+    {% endfor %}
     {% endif %}
     <script>
-        $(document).ready(function() {
-            function SuccessPopUp(message){
+        $(document).ready(function () {
+            function SuccessPopUp(message) {
                 Swal.fire({
                     icon: 'success',
                     title: 'Successfully!',
                     text: message,
                     confirmButtonText: 'Ok',
-                    confirmButtonColor: '#0EA5E9',
+                    confirmButtonColor: '#036168',
                 }).then(() => {
                     window.location.href = '{% url "dashboard" %}';
                 });
             }
-    
-            function ErrorPopUp(message){
+
+            function ErrorPopUp(message) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Failed!',
@@ -112,29 +204,29 @@
                     confirmButtonColor: '#dc3545',
                 });
             }
-            
+
             function onLoading() {
                 $('#loading').removeClass('d-none');
                 $('.overlay').removeClass('d-none');
             }
-    
+
             function onLoaded() {
                 $('#loading').addClass('d-none');
                 $('.overlay').addClass('d-none');
             }
-    
+
             function resetInput() {
                 const inputs = $('.form-group input');
-            
-                inputs.each(function() {
+
+                inputs.each(function () {
                     $(this).val('');
                 });
             }
-            resetInput();        
-        
+            resetInput();
+
             const passwordInput = $('#password');
             const toggleIcon = $('#toggle-password');
-            toggleIcon.on('click', function() {
+            toggleIcon.on('click', function () {
                 if (passwordInput.attr('type') === 'password') {
                     passwordInput.attr('type', 'text');
                     toggleIcon.removeClass('fa-eye').addClass('fa-eye-slash');
@@ -143,14 +235,14 @@
                     toggleIcon.removeClass('fa-eye-slash').addClass('fa-eye');
                 }
             });
-    
-            $('#form-signin').on('submit', function(event) {
+
+            $('#form-signin').on('submit', function (event) {
                 event.preventDefault();
                 onLoading();
                 $('#error-message').addClass('d-none');
-                
+
                 const formData = new FormData(this);
-            
+
                 $.ajax({
                     url: '{% url "sign-in" %}',
                     type: 'POST',
@@ -160,7 +252,7 @@
                     headers: {
                         'X-CSRFToken': '{{ csrf_token }}'
                     },
-                    success: function(response) {
+                    success: function (response) {
                         onLoaded();
                         if (response.status === 'success') {
                             SuccessPopUp(response.message);
@@ -169,7 +261,7 @@
                             $('#error-message').text(response.message).removeClass('d-none');
                         }
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         onLoaded();
                         Swal.fire({
                             icon: 'error',
@@ -182,7 +274,7 @@
                         });
                     }
                 });
-            });              
+            });
         });
     </script>
 </body>

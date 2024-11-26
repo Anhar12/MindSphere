@@ -6,18 +6,23 @@ Schedule List - MindSphere
 
 {% block content %}
 <section class="w-100 px-4 container" style="margin-top: 100px;">
-    <h1 class="fw-bold text-center mb-4">List Of <span class="text-primary">Psycholoogical Test</span></span></h1>
+    <h1 class="fw-bold text-center mb-4">List Of <span class="text-primary">Psychological Test</span></span></h1>
 
-    <div class="d-flex w-100 justify-content-between align-items-center flex-wrap mt-4 mb-0 gap-3">
-        <h4 class=" fw-semibold">Schedule List</h4>
-        <form id="form-search" method="GET" autocomplete="off" action="#" class="d-flex align-items-center w-75">
-            <div class="form-group w-100 pe-1">
-                <input type="search" class="form-control fs-small" id="search" name="q" placeholder=" " maxlength="150" value="{{ query|default:'' }}"/>
-                <label for="search" class="form-label fs-small bg-white px-1">Search Schedule</label>
+    <div class="d-flex flex-column w-100 gap-3 mt-4 mb-2">
+        <form id="form-search" method="GET" autocomplete="off" action="#" 
+              class="d-flex align-items-center w-100 gap-2">
+            <div class="form-group flex-grow-1 position-relative">
+                <input type="search" 
+                       class="form-control fs-small pe-4" 
+                       id="search" name="q" 
+                       placeholder="Search Schedule" 
+                       maxlength="150" 
+                       value="{{ query|default:'' }}">
             </div>
             <button type="submit" class="btn btn-primary fs-small fw-bold"><i class="fa-solid fa-magnifying-glass"></i></button>
         </form>
     </div>
+    
 
     {% if test_schedules %}
         <div class="flex-wrap w-100 d-flex justify-content-center mb-3">
