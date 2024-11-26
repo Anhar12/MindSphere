@@ -78,12 +78,16 @@
 
 .btn-primary {
     background: #036168 !important;
-    border: #036168 !important;
+    border: #036168;
+    border-width: 1px; /* Default border thickness */
+    border-style: solid; /* Border style */
 }
 
 .btn-primary:hover {
-    background: rgb(2 132 199) !important;
-    border: rgb(2 132 199) !important;
+    background: #024D53 !important;
+    border: #024D53;
+    border-width: 1px; /* Default border thickness */
+    border-style: solid; /* Border style *
 }
 
 .text-warning {
@@ -97,7 +101,7 @@
 
 /* nav start */
 .navbar {
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(5px);
 }
 
@@ -343,12 +347,18 @@ footer a.nav-link:hover {
 }
 
 .form-check-input:checked {
-    background-color: rgb(2 132 199); 
-    border-color: rgb(2 132 199); 
+    background-color: #024D53
+
+; 
+    border-color: #024D53
+
+; 
 }
 
 .form-check-input:checked + .form-check-label::before {
-    background-color: rgb(2 132 199); 
+    background-color: #024D53
+
+; 
 }
 
 .fs-small {
@@ -370,12 +380,16 @@ footer a.nav-link:hover {
 }
 
 .ag-theme-quartz .ag-header-cell, .ag-header-cell .ag-icon {
-    background: rgb(2 132 199);
+    background: #024D53
+
+;
     color: #fff !important;
 }
 
 .ag-theme-quartz .ag-header-cell:hover, .ag-header-cell .ag-icon:hover {
-    background: rgb(2 132 199) !important;
+    background: #024D53
+
+ !important;
     color: #fff !important;
 }
 
@@ -555,9 +569,9 @@ textarea {
         width: 0%;
     }
 
-    #signin-form {
+    /* #signin-form {
         width: 85% !important;
-    }
+    } */
 
     #signup-form {
         width: 85% !important;
