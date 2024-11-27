@@ -1,3 +1,64 @@
+<style>
+/* Default styles for desktop and larger screens */
+#footer h2 {
+    font-size: 1.5rem;
+}
+
+#footer ul li a {
+    font-size: 1rem;
+}
+
+#footer .text-light {
+    font-size: 0.9rem;
+}
+
+#footer .rounded-circle {
+    font-size: 0.9rem;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Responsive styles for screens smaller than 768px */
+@media (max-width: 991px) {
+    #footer {
+        padding: 20px 10px;
+    }
+
+    #footer h2 {
+        font-size: 1.25rem;
+    }
+
+    #footer ul li a {
+        font-size: 0.9rem;
+    }
+
+    #footer .text-light {
+        font-size: 0.8rem;
+    }
+
+    #footer .rounded-circle {
+        font-size: 0.8rem;
+        width: 35px;
+        height: 35px;
+    }
+
+    #footer .d-flex {
+        gap: 20px;
+        text-align: center;
+    }
+
+    #footer .container {
+        padding: 0;
+    }
+
+    
+}
+
+</style>
+
 <footer id="footer" class="py-4 bg-primary {% if portal or DoctorManagement %} d-none {% endif %}">
     <div class="container">
         <div class="d-flex flex-md-row flex-column py-3 border-bottom gap-5 justify-content-between mb-4">
