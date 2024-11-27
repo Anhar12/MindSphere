@@ -138,6 +138,15 @@
                             <label for="username" class="position-absolute top-50 translate-middle" style="right: 3px"><i class="text-primary fas fa-user"></i></label>
                         </div>
                     </div>
+
+                    <div class="w-100 mt-2">
+                        <div class="text-danger d-none text-end w-100 fs-smaller ps-1 mb-1" id="email_error"></div>
+                        <div class="form-group w-100 position-relative">
+                            <input type="email" class="form-control pe-5 fs-small" id="email" name="email" required placeholder=" " maxlength="150" value="{{ form.email.value|default_if_none:'' }}"/>
+                            <label for="email" class="form-label fs-small bg-white px-1">Email</label>
+                            <label for="email" class="position-absolute top-50 translate-middle" style="right: 1px"><i class="text-primary fas fa-envelope"></i></label>
+                        </div>
+                    </div>
                 
                     <!-- First Name Field -->
                     <div class="w-100 mt-2">
@@ -182,7 +191,6 @@
                     <button type="submit" class="btn btn-primary w-100 mx-auto fs-small fw-bold mt-4">Sign Up</button>
                 </form>
                 
-    
                 <div class="d-flex justify-content-center gap-1 mt-3">
                     <p class="text-center text-secondary my-auto fs-small">Already have an account? </p>
                     <a href="{% url 'sign-in' %}" class="btn border-0 p-0 fw-bold text-primary btn-portal my-auto fs-small">Sign In</a>
@@ -300,7 +308,15 @@
                 },
                 error: function(xhr, status, error) {
                     onLoaded();
-                    ErrorPopUp('An unexpected error occurred. Please try again.');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Failed!',
+                        text: message,
+                        confirmButtonText: 'Ok',
+                        confirmButtonColor: '#dc3545',
+                    }).then(() => {
+                        location.reload();
+                    });
                 }
             });
         });         

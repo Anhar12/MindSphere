@@ -46,9 +46,6 @@
     padding: 0;
 }
 
-
-
-
 /* bootstrap custom start */
 .bg-primary {
     background: #036168 !important;
@@ -447,18 +444,18 @@ textarea {
 }
 
 .pagination .page-item.active .page-link {
-    background-color: rgb(14, 165, 233);
+    background-color: #036168;
     color: #fff;
-    border-color: rgb(14, 165, 233);
+    border-color: #036168;
 }
 
 .pagination .page-item:not(.disabled, .active) .page-link {
-    color: rgb(14, 165, 233);
+    color: #036168;
 }
 
 .pagination .page-link:hover {
     background-color: rgba(14, 165, 233, 0.1);
-    color: rgb(14, 165, 233);
+    color: #036168;
 }
 
 .bg-philosophy ul.text-start {

@@ -7,24 +7,15 @@ Test Psychologist - Mindsphere
 {% block content %}
 <section class="w-100 px-4 pt-5 pt-md-3">
     <h5 class="fw-bold fs-md-4 fs-5 text-center">Your <span class="text-primary">psychological test</span> schedule</span></h5>
-
-    <form id="form-search" method="GET" autocomplete="off" action="#" class="d-flex mt-3 align-items-center w-100">
-        <div class="form-group w-100 pe-1">
-            <input type="search" class="form-control fs-small" id="search" name="q" placeholder=" " maxlength="150" value="{{ query|default:'' }}"/>
-            <label for="search" class="form-label fs-small bg-white px-1">Search your schedule</label>
-        </div>
-        <button type="submit" class="btn btn-primary fs-small fw-bold"><i class="fa-solid fa-magnifying-glass"></i></button>
-    </form>
-
     {% if registrations_json %}
-        <div id="myGrid" class="ag-theme-quartz d-none my-2" style="height: 64vh; width: 100%;"></div>
+        <div id="myGrid" class="ag-theme-quartz d-none my-4" style="height: 67vh; width: 100%;"></div>
         <div id="loading-spinner" class="d-flex justify-content-center align-items-center" style="height: 100%;">
             <div class="spinner-border text-primary" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
         </div>
     {% else %}
-        <div class="alert alert-warning text-center w-100 my-2">
+        <div class="alert alert-warning text-center w-100 my-4">
             No psychological test schedule found.
         </div>
     {% endif %}
@@ -148,18 +139,12 @@ Test Psychologist - Mindsphere
         const gridOptions = {
             columnDefs: [
                 {
-                    headerName: '#',
-                    valueGetter: 'node.rowIndex + 1',
-                    width: 65,
-                    filter: false,
-                },
-                {
                     headerName: 'Action',
                     cellRenderer: function (params) {
                         const buttonContainer = document.createElement('div');
                         {% if user.role == 1 %}
                             const editButton = document.createElement('button');
-                            editButton.innerHTML = '<i class="fas fa-user-check"></i>';
+                            editButton.innerHTML = '<i class="fas fa-pen"></i>';
                             editButton.className = 'btn btn-success btn-sm me-1';
                             editButton.addEventListener('click', function () {
                                 
@@ -214,7 +199,7 @@ Test Psychologist - Mindsphere
                         {% endif %}
                         return buttonContainer;
                     },
-                    width: 75,
+                    width: 78,
                     filter: false,
                     sortable: false,
                 },
@@ -239,8 +224,7 @@ Test Psychologist - Mindsphere
                 {
                     headerName: 'Number',
                     field: 'number',
-                    width: 90,
-                    filter: false
+                    width: 150
                 },
                 {
                     headerName: 'Location',
@@ -305,30 +289,42 @@ Test Psychologist - Mindsphere
 
         $('#form-result').on('submit', function (e) {
             e.preventDefault();
-            onLoading();
-            let formData = new FormData(this);
-            let formUrl = $(this).attr('data-url');
-    
-            $.ajax({
-                url: formUrl,
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                headers: {
-                    'X-CSRFToken': '{{ csrf_token }}'
-                },
-                success: function (response) {
-                    onLoaded();
-                    if (response.status === 'success') {
-                        SuccessPopUp(response.message);
-                    } else {
-                        ErrorPopUp(response.message);
-                    }
-                },
-                error: function (xhr) {
-                    onLoaded();
-                    ErrorPopUp('An error occurred. Please try again.');
+            Swal.fire({
+                title: 'Are you sure you want to finish this test result?',
+                text: "Results that have been finished cannot be changed anymore.",
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#036168',
+                cancelButtonColor: '#6C757D',
+                confirmButtonText: 'Yes, finish it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    onLoading();
+                    let formData = new FormData(this);
+                    let formUrl = $(this).attr('data-url');
+            
+                    $.ajax({
+                        url: formUrl,
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        headers: {
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        success: function (response) {
+                            onLoaded();
+                            if (response.status === 'success') {
+                                SuccessPopUp(response.message);
+                            } else {
+                                ErrorPopUp(response.message);
+                            }
+                        },
+                        error: function (xhr) {
+                            onLoaded();
+                            ErrorPopUp('An error occurred. Please try again.');
+                        }
+                    });
                 }
             });
         });
