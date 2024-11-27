@@ -1,15 +1,28 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash, get_user_model
+from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import send_mail
+from django.conf import settings
+from django.contrib import messages
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.contrib.sites.shortcuts import get_current_site
+from django.utils.encoding import force_bytes, force_str
 from .decorators import admin_required, login_required, user_required, ParticipantPsychologist_required, psychologist_required
 from django.http import JsonResponse
 from django.core.paginator import Paginator 
-from .forms import SignUpForm, ScheduleForm, ResultForm
+from .forms import SignUpForm, ScheduleForm, ResultForm, ProfileForm, PasswordForm
 from .models import Registrations, Users, Results, TestSchedules
 from django.core.exceptions import ValidationError
 from django.db.models import Q
+from django.db.models.functions import TruncDate
 from datetime import timedelta
 from django.utils.timezone import now
-from django.db.models import Count, F
+from django.db.models import Count
+from django.http import HttpResponse
+from reportlab.lib.pagesizes import letter
+from django.templatetags.static import static
+from reportlab.pdfgen import canvas
+from reportlab.lib.utils import ImageReader
 import os
 
 def Home(request):
@@ -23,11 +36,9 @@ def ScheduleList(request):
     tomorrow = today + timedelta(days=1)
     
     schedules = TestSchedules.objects.annotate(
-        registered_count=Count('registrations')
-    ).filter(
-        Date__gte=tomorrow,
-        registered_count__lt=F('Capacity')
-    ).order_by('-Date')
+        registered_count=Count('registrations'),
+        truncated_date=TruncDate('Date')
+    ).all().order_by('-Date')
     
     paginator = Paginator(schedules, 6)
     page_number = request.GET.get('page')
@@ -36,6 +47,7 @@ def ScheduleList(request):
     context = {
         'section': 'schedule-list',
         'test_schedules': page_obj,
+        'tomorrow': tomorrow
     }
     return render(request, 'Home/schedule.html', context)
 
@@ -109,10 +121,6 @@ def SignOut(request):
     logout(request)
     return redirect('sign-in')
 
-@login_required()
-def Dashboard(request):
-    return render(request, 'MindSphere/dashboard.html', context={'section' : 'dashboard'})
-
 def delete_old_file(file_path):
     if file_path and os.path.exists(file_path):
         os.remove(file_path)
@@ -124,11 +132,9 @@ def TestSchedule(request):
     tomorrow = today + timedelta(days=1)
     
     schedules = TestSchedules.objects.annotate(
-        registered_count=Count('registrations')
-    ).filter(
-        Date__gte=tomorrow,
-        registered_count__lt=F('Capacity')
-    ).order_by('-Date')
+        registered_count=Count('registrations'),
+        truncated_date=TruncDate('Date')
+    ).all().order_by('-Date')
     
     paginator = Paginator(schedules, 6)
     page_number = request.GET.get('page')
@@ -139,11 +145,13 @@ def TestSchedule(request):
             'section' : 'test-schedule', 
             'psychologists' : psychologists,
             'test_schedules' : page_obj,
+            'tomorrow': tomorrow
         })
     
     return render(request, 'MindSphere/schedule.html', context={
         'section' : 'test-schedule',
         'test_schedules' : page_obj,
+        'tomorrow': tomorrow
     })
 
 @admin_required()
@@ -185,6 +193,14 @@ def UpdateSchedule(request, pk):
         form = ScheduleForm(request.POST, request.FILES)
         if form.is_valid():
             data = form.cleaned_data
+            
+            total_registered = Registrations.objects.filter(TestSchedule=schedule).count()
+            if total_registered > data['Capacity']:
+                return JsonResponse({
+                    'status': 'error',
+                    'message': 'You cannot update with that capacity! the capacity must be more or equal to the numbers of registrants.'
+                })
+                
             schedule.Name = data['Name']
             psychologist_id = data['Psychologist']
             psychologist = Users.objects.filter(id=psychologist_id.id, role=Users.PSYCHOLOGIST).first()
@@ -204,7 +220,6 @@ def UpdateSchedule(request, pk):
                 if schedule.Image:
                     delete_old_file(schedule.Image.path)
                 schedule.Image = request.FILES['Image']
-                
             try:
                 schedule.save()
             except ValidationError as e:
@@ -419,3 +434,190 @@ def History(request):
         'result_json': serialized_data
     })
 
+@login_required()
+def AccountSettings(request):
+    account = Users.objects.get(id=request.user.id)
+    
+    return render(request, 'MindSphere/settings.html', context={
+        'section' : 'account-settings',
+        'account': account
+    })
+
+@login_required()
+def ChangeProfile(request):
+    if request.method == 'POST':
+        account = Users.objects.get(id=request.user.id)
+        form = ProfileForm(request.POST, instance=account)
+        if form.is_valid():
+            data = form.cleaned_data
+            
+            account.username = data['username']
+            account.first_name = data['first_name']
+            account.last_name = data['last_name']
+            account.email = data['email']
+            
+            account.save()
+
+            return JsonResponse({'status': 'success', 'message': 'Profile updated successfully!'})
+        else:
+            errors = {}
+            for field, error_list in form.errors.items():
+                errors[field] = error_list
+
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Failed updating profile.',
+                'errors': errors
+            })
+    
+    return JsonResponse({
+        'status': 'error',
+        'message': 'Invalid request method.'
+    })
+    
+@login_required()
+def ChangePassword(request):
+    if request.method == 'POST':
+        user = request.user
+        form = PasswordForm(request.POST, user=user)
+
+        if form.is_valid():
+            new_password = form.cleaned_data.get('password')
+            user.set_password(new_password)
+            user.save()
+            
+            update_session_auth_hash(request, user)
+
+            return JsonResponse({'status': 'success', 'message': 'Password updated successfully!'})
+        else:
+            errors = {}
+            for field, error_list in form.errors.items():
+                errors[field] = error_list
+                
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Failed to update password.',
+                'errors': errors
+            })
+    
+    return JsonResponse({
+        'status': 'error',
+        'message': 'Invalid request method.'
+    })
+
+def ForgotPassword(request):
+    if request.method == "POST":
+        email = request.POST.get("email")
+        
+        try:
+            user = Users.objects.get(email=email)
+        except Users.DoesNotExist:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Email not registered in our system.',
+            })
+
+        token = default_token_generator.make_token(user)
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        
+        reset_url = f"http://{get_current_site(request).domain}/reset-password/{uid}/{token}/"
+        
+        subject = "Reset your password"
+        message = f"Click the link to reset your password: {reset_url}"
+        
+        try:
+            send_mail(subject, message, 'anharkhoirun@gmail.com', [email])
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Password reset link has been sent to your email.',
+            })
+        except Exception as e:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Failed to send email. Please try again later.',
+            })
+
+    return JsonResponse({
+        'status': 'error',
+        'message': 'Invalid request method.',
+    })
+    
+def ResetPassword(request, uidb64, token):
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = get_user_model().objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, get_user_model().DoesNotExist):
+        messages.error(request, 'Invalid link or expired token.')
+        return redirect('sign-in')
+
+    if not default_token_generator.check_token(user, token):
+        messages.error(request, 'Invalid token or expired.')
+        return redirect('sign-in')
+
+    if request.method == 'POST':
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
+
+        if password != confirm_password:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Password and confirm password do not match.',
+            })
+
+        if password:
+            user.set_password(password)
+            user.save()
+            
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Successfully reset password.',
+            })
+
+    return render(request, 'Home/reset-password.html', {'uidb64': uidb64, 'token': token})
+
+def GenerateCertificate(request, result_id):
+    try:
+        result = Results.objects.get(id=result_id)
+    except Results.DoesNotExist:
+        return HttpResponse("Result not found", status=404)
+
+    # Setup HTTP response
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename={result.ResultNumber}.pdf'
+
+    # Setup PDF Canvas
+    p = canvas.Canvas(response, pagesize=letter)
+    width, height = letter
+
+    logo_path = 'PsychologyTest/static/images/LogoPrimary.png'
+    logo = os.path.join(settings.BASE_DIR, logo_path).replace('\\', '/')
+
+    p.setTitle(f"{result.ResultNumber}")
+    
+    p.drawImage(logo, x=50, y=height - 100, width=100, height=100, preserveAspectRatio=True, mask='auto')
+
+    p.setFont("Helvetica-Bold", 28)
+    p.drawString(200, height - 80, "Psychometric Test Certificate")
+
+    p.setFont("Helvetica-Bold", 16)
+    p.drawString(50, height - 150, f"Certificate Number: {result.ResultNumber}")
+
+    p.setFont("Helvetica", 14)
+    intro_text = (
+        "This is to certify that the individual named below has successfully "
+        "completed the psychometric test with excellence and dedication. "
+        "We congratulate them for their achievement."
+    )
+    p.drawString(50, height - 190, intro_text)
+
+    p.setFont("Helvetica-Bold", 18)
+    p.drawString(50, height - 250, f"Name: {result.Registration.User.first_name} {result.Registration.User.last_name}")
+    p.setFont("Helvetica", 16)
+    p.drawString(50, height - 280, f"Date: {result.Date.strftime('%B %d, %Y')}")
+
+    p.setFont("Helvetica", 14)
+    p.drawString(50, height - 320, "Congratulations on this significant accomplishment!")
+
+    p.showPage()
+    p.save()
+    return response

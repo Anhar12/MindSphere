@@ -104,6 +104,11 @@ Schedule - Mindsphere
                         <button class="btn btn-success btn-sm btn-regis"
                             data-id="{{ test_schedule.id }}">Register</button>
                     </div>
+                    {% else %}
+                    <div class="text-end">
+                        <button class="btn btn-danger btn-sm btn-notavailable">Not Available</button>
+                    </div>
+                   
                     {% endif %}
                 </div>
             </div>
@@ -197,8 +202,7 @@ Schedule - Mindsphere
                                 {% if psychologists %}
                                 <option value="" disabled selected hidden>Select Psychologist</option>
                                 {% for psychologist in psychologists %}
-                                <option value="{{ psychologist.id }}">{{ psychologist.first_name }} {{
-                                    psychologist.last_name }}</option>
+                                <option value="{{ psychologist.id }}">{{ psychologist.first_name }} {{ psychologist.last_name }}</option>
                                 {% endfor %}
                                 {% else %}
                                 <option value="" disabled selected hidden class="text-danger">Nothing Psychologist
@@ -442,7 +446,7 @@ Schedule - Mindsphere
             e.stopPropagation();
             let button = $(this);
 
-            let parent = button.closest('.test-schedule');
+            let parent = button.closest('.card');
 
             let scheduleId = parent.data('id');
             let name = parent.data('name');
@@ -490,7 +494,7 @@ Schedule - Mindsphere
 
             Swal.fire({
                 title: 'Are you sure you want to delete this schedule?',
-                text: "All data related to this schedule will be lost.",
+                text: "All data related to this schedule will be lost and you will not be able to restore it.",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#dc3545',
@@ -547,6 +551,7 @@ Schedule - Mindsphere
             let baseUrl = "{% url 'regis-schedule' 0 %}";
             let dynamicUrl = baseUrl.replace('0', id);
             $('#form-regis').attr('data-url', dynamicUrl);
+
         });
 
         $('#form-regis').on('submit', function (e) {
@@ -579,6 +584,7 @@ Schedule - Mindsphere
                 }
             });
         });
+
     });    
 </script>
 

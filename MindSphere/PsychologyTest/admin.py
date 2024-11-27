@@ -5,17 +5,17 @@ from .models import Users, Registrations, Results, TestSchedules
 class UserAdmin(BaseUserAdmin):
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
-        ('Personal info', {'fields': ('first_name', 'last_name', 'role')}),
+        ('Personal info', {'fields': ('email', 'first_name', 'last_name', 'role')}),
         ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
         ('Important dates', {'fields': ('last_login',)}),
     )
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'first_name', 'last_name', 'password1', 'password2', 'role'),
+            'fields': ('username', 'email', 'first_name', 'last_name', 'password1', 'password2', 'role'),
         }),
     )
-    list_display = ('username', 'first_name', 'last_name', 'role', 'is_staff', 'is_superuser')
+    list_display = ('username', 'email', 'first_name', 'last_name', 'role', 'is_staff', 'is_superuser')
     search_fields = ('username', 'first_name', 'last_name')
     ordering = ('username',)
 
