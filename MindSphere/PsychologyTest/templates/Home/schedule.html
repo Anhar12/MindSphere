@@ -59,14 +59,11 @@ Schedule List - MindSphere
                 </div>
                 
                 <div class="justify-content-end d-flex w-50 gap-1 p-0">
-                    {% if test_schedule.registered_count < test_schedule.Capacity and test_schedule.truncated_date > tomorrow %}
-                        <div class="text-end">
+                    <div class="text-end">
+                        {% if test_schedule.registered_count < test_schedule.Capacity and test_schedule.truncated_date > tomorrow %}
                             <button class="btn btn-success btn-sm btn-regis">Register</button>
-                        </div>
                         {% else %}
-                        <div class="text-end">
                             <button class="btn btn-danger btn-sm btn-notavailable">Not Available</button>
-                        </div>
                         {% endif %}
                     </div>
                 </div>

@@ -108,7 +108,10 @@ Schedule - Mindsphere
                     <div class="text-end">
                         <button class="btn btn-danger btn-sm btn-notavailable">Not Available</button>
                     </div>
+<<<<<<< HEAD
+=======
                    
+>>>>>>> 8e2e0399feede9f2922806476a8b403e12d885e7
                     {% endif %}
                 </div>
             </div>
@@ -202,7 +205,11 @@ Schedule - Mindsphere
                                 {% if psychologists %}
                                 <option value="" disabled selected hidden>Select Psychologist</option>
                                 {% for psychologist in psychologists %}
+<<<<<<< HEAD
+                                <option value="{{ psychologist.id }}">{{ psychologist.first_name }} {{psychologist.last_name }}</option>
+=======
                                 <option value="{{ psychologist.id }}">{{ psychologist.first_name }} {{ psychologist.last_name }}</option>
+>>>>>>> 8e2e0399feede9f2922806476a8b403e12d885e7
                                 {% endfor %}
                                 {% else %}
                                 <option value="" disabled selected hidden class="text-danger">Nothing Psychologist
