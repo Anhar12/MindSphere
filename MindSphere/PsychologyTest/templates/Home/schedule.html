@@ -60,8 +60,19 @@ Schedule List - MindSphere
                 
                 <div class="justify-content-end d-flex w-50 gap-1 p-0">
                     {% if test_schedule.registered_count < test_schedule.Capacity and test_schedule.truncated_date > tomorrow %}
+<<<<<<< HEAD
                     <div class="text-end">
                         <button class="btn btn-success btn-sm btn-regis">Register</button>
+=======
+                        <div class="text-end">
+                            <button class="btn btn-success btn-sm btn-regis">Register</button>
+                        </div>
+                        {% else %}
+                        <div class="text-end">
+                            <button class="btn btn-danger btn-sm btn-notavailable">Not Available</button>
+                        </div>
+                        {% endif %}
+>>>>>>> 8e2e0399feede9f2922806476a8b403e12d885e7
                     </div>
                     {% else %}
                     <div class="text-end">

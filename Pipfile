@@ -9,6 +9,7 @@ django-bootstrap5 = "*"
 mysqlclient = "*"
 faker = "*"
 pillow = "*"
+reportlab = "*"
 
 [dev-packages]
 

@@ -8,23 +8,15 @@ History - Mindsphere
 <section class="w-100 px-4 pt-5 pt-md-3">
     <h5 class="fw-bold fs-md-4 fs-5 text-center"> Your psychological <span class="text-primary">test history</span></h5>
 
-    <form id="form-search" method="GET" autocomplete="off" action="#" class="d-flex mt-3 align-items-center w-100">
-        <div class="form-group w-100 pe-1">
-            <input type="search" class="form-control fs-small" id="search" name="q" placeholder=" " maxlength="150" value="{{ query|default:'' }}"/>
-            <label for="search" class="form-label fs-small bg-white px-1">Search your history</label>
-        </div>
-        <button type="submit" class="btn btn-primary fs-small fw-bold"><i class="fa-solid fa-magnifying-glass"></i></button>
-    </form>
-
     {% if result_json %}
-        <div id="myGrid" class="ag-theme-quartz d-none my-2" style="height: 64vh; width: 100%;"></div>
+        <div id="myGrid" class="ag-theme-quartz d-none my-4" style="height: 67vh; width: 100%;"></div>
         <div id="loading-spinner" class="d-flex justify-content-center align-items-center" style="height: 100%;">
             <div class="spinner-border text-primary" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
         </div>
     {% else %}
-        <div class="alert alert-warning text-center w-100 my-2">
+        <div class="alert alert-warning text-center w-100 my-4">
             No psychological test history found.
         </div>
     {% endif %}
@@ -49,8 +41,6 @@ History - Mindsphere
                 text: message,
                 confirmButtonText: 'Ok',
                 confirmButtonColor: '#157347',
-            }).then(() => {
-                location.reload();
             });
         }
 
@@ -73,7 +63,7 @@ History - Mindsphere
             };
             return date.toLocaleDateString('en-GB', options);
         }
-        
+
         const formattedData = regisData.map(item => ({
             id: item.id,
             number: item.number,
@@ -85,81 +75,26 @@ History - Mindsphere
             date: item.date,
             status: item.status,
         }));
-        
+
+        function downloadCertificate(params) {
+            if (params.data.status === 'Completed') {
+                const downloadUrl = `{% url 'generate-certificate' 0 %}`.replace('0', params.data.id);
+                return `<button class="btn btn-primary btn-sm btn-print" data-url="${downloadUrl}">Download Certificate</button>`;
+            } else {
+                return `Not Completed`;
+            }
+        }
+
         const gridOptions = {
             columnDefs: [
                 {
-                    headerName: '#',
-                    valueGetter: 'node.rowIndex + 1',
-                    width: 65,
-                    filter: false,
+                    headerName: 'Certificates',
+                    field: 'actions',
+                    cellRenderer: downloadCertificate,
+                    flex: 1,
+                    minWidth: 200,
+                    maxWidth: 200
                 },
-                {% if user.role != -1 %}
-                {
-                    headerName: 'Action',
-                    cellRenderer: function (params) {
-                        const buttonContainer = document.createElement('div');
-                        {% if user.role == 1 %}
-                            const editButton = document.createElement('button');
-                            editButton.innerHTML = '<i class="fas fa-user-check"></i>';
-                            editButton.className = 'btn btn-success btn-sm me-1';
-                            editButton.addEventListener('click', function () {
-                                
-                                $('#resultModal').modal('show');
-                                $('#form-result').find('#name').val(params.data.name);
-                                $('#form-result').find('#test').val(params.data.schedule_name);
-                                let baseUrl = "{% url 'history' %}";
-                                let dynamicUrl = baseUrl.replace('0', params.data.id);
-                                $('#form-result').attr('data-url', dynamicUrl);
-                            });
-                            buttonContainer.appendChild(editButton);
-                        {% endif %}
-                        const deleteButton = document.createElement('button');
-                        deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>';
-                        deleteButton.className = 'btn btn-danger btn-sm';
-                        deleteButton.addEventListener('click', function () {
-                            let formUrl = "{% url 'history' %}";
-                            formUrl = formUrl.replace('0', params.data.id);
-                            console.log(formUrl);;
-                            
-                            Swal.fire({
-                                title: 'Are you sure you want to delete this schedule?',
-                                text: "All data related to this schedule will be lost.",
-                                icon: 'warning',
-                                showCancelButton: true,
-                                confirmButtonColor: '#dc3545',
-                                cancelButtonColor: '#6C757D',
-                                confirmButtonText: 'Yes, delete it!',
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    $.ajax({
-                                        url: formUrl,
-                                        type: 'DELETE',
-                                        headers: {
-                                            'X-CSRFToken': '{{ csrf_token }}',
-                                        },
-                                        success: function (response) {
-                                            if (response.status === 'success') {
-                                                SuccessPopUp(response.message);
-                                            } else {
-                                                ErrorPopUp(response.message);
-                                            }
-                                        },
-                                        error: function (xhr, status, error) {
-                                            ErrorPopUp('An error occurred. Please try again.');
-                                        },
-                                    });
-                                }
-                            });
-                        });
-                        buttonContainer.appendChild(deleteButton);
-                        return buttonContainer;
-                    },
-                    width: 100,
-                    filter: false,
-                    sortable: false,
-                },
-                {% endif %}
                 {
                     headerName: 'Certificate Number',
                     field: 'number',
@@ -218,19 +153,48 @@ History - Mindsphere
             rowSelection: 'multiple',
             suppressRowClickSelection: true,
             rowData: formattedData,
-            pagination: true,   
+            pagination: true,
             paginationPageSize: 20,
             getRowId: function (params) {
                 return params.data.id;
             },
         };
-        
+
         const eGridDiv = document.querySelector('#myGrid');
-        new agGrid.Grid(eGridDiv, gridOptions);        
+        new agGrid.Grid(eGridDiv, gridOptions);
 
         $('#loading-spinner').addClass('d-none');
         $('#myGrid').removeClass('d-none');
 
+        $(document).on('click', '.btn-print', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        
+            const url = $(this).data('url');
+        
+            $.ajax({
+                url: url,
+                method: 'GET',
+                xhrFields: {
+                    responseType: 'blob'
+                },
+                success: function (data, status, xhr) {
+                    const contentDisposition = xhr.getResponseHeader('Content-Disposition');
+                    const fileName = contentDisposition ? contentDisposition.split('filename=')[1].replace(/"/g, '') : 'Certificate.pdf';
+                    const blob = new Blob([data], { type: 'application/pdf' });
+                    const link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = fileName;
+                    link.click();
+                    SuccessPopUp('Certificate downloaded successfully!');
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error:', error);
+                    ErrorPopUp('Failed to download certificate.');
+                }
+            });
+        });
+        
     });
 </script>
 

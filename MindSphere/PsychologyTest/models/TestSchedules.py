@@ -16,6 +16,9 @@ class TestSchedules(models.Model):
         if self.Date < now() + timedelta(days=1):
             raise ValidationError({'Date': 'At least tomorrow.'})
 
+        if self.Capacity <= 0:
+            raise ValidationError({'Capacity': 'At least 1.'})
+        
         if self.Capacity > 150:
             raise ValidationError({'Capacity': 'cannot exceed 150 participants.'})
 

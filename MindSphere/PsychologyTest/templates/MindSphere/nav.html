@@ -13,31 +13,31 @@
             </div>
             <ul class="navbar-nav d-flex flex-column gap-3 mt-3 w-100 px-3">
                 <li class="nav-item">
-                    <a class="nav-link w-100 fw-semibold {% if section == 'dashboard' %}active{% endif %}" href="{% if role == 1 %} {% url 'dashboard' %} {% else %} {% url 'dashboard' %} {% endif %}">
-                        <i class="fas fa-chart-column" style="width: 16%;"></i> Dashboard
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link w-100 fw-semibold {% if section == 'test-schedule' %}active{% endif %}" href="{% if role == 1 %} {% url 'test-schedule' %} {% else %} {% url 'test-schedule' %} {% endif %}">
+                    <a class="nav-link w-100 fw-semibold {% if section == 'test-schedule' %}active{% endif %}" href="{% url 'test-schedule' %}">
                         <i class="fas fa-clipboard-list" style="width: 16%;"></i> Test Schedule
                     </a>
                 </li>
                 {% if user.role == -1 %}
                     <li class="nav-item">
-                        <a class="nav-link w-100 fw-semibold {% if section == 'psychologist' %}active{% endif %}" href="{% if role == 1 %} {% url 'psychologist' %} {% else %} {% url 'psychologist' %} {% endif %}">
+                        <a class="nav-link w-100 fw-semibold {% if section == 'psychologist' %}active{% endif %}" href="{% url 'psychologist' %}">
                             <i class="fas fa-users-gear" style="width: 16%;"></i> Psychologist
                         </a>
                     </li>
                 {% else %}
                     <li class="nav-item">
-                        <a class="nav-link w-100 fw-semibold {% if section == 'psychological-test' %}active{% endif %}" href="{% if role == 1 %} {% url 'psychological-test' %} {% else %} {% url 'psychological-test' %} {% endif %}">
+                        <a class="nav-link w-100 fw-semibold {% if section == 'psychological-test' %}active{% endif %}" href="{% url 'psychological-test' %}">
                             <i class="fas fa-brain" style="width: 16%;"></i> Psychological Test
                         </a>
                     </li>
                 {% endif %}
                 <li class="nav-item">
-                    <a class="nav-link w-100 fw-semibold {% if section == 'history' %}active{% endif %}" href="{% if role == 1 %} {% url 'history' %} {% else %} {% url 'history' %} {% endif %}">
+                    <a class="nav-link w-100 fw-semibold {% if section == 'history' %}active{% endif %}" href="{% url 'history' %}">
                         <i class="fas fa-book" style="width: 16%;"></i> History
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link w-100 fw-semibold {% if section == 'account-settings' %}active{% endif %}" href="{% url 'account-settings' %}">
+                        <i class="fas fa-gear" style="width: 16%;"></i> Account Settings
                     </a>
                 </li>
             </ul>

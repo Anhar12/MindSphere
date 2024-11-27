@@ -9,7 +9,8 @@ urlpatterns = [
     path('sign-in', views.SignIn, name='sign-in'),
     path('sign-up', views.SignUp, name='sign-up'),
     path('sign-out', views.SignOut, name='sign-out'),
-    path('mind-sphere/dashboard', views.Dashboard, name='dashboard'),
+    path('forgot-password', views.ForgotPassword, name='forgot-password'),
+    path('reset-password/<uidb64>/<token>/', views.ResetPassword, name='reset-password'),
     
     path('mind-sphere/test-schedule', views.TestSchedule, name='test-schedule'),
     path('mind-sphere/add-schedule', views.AddSchedule, name='add-schedule'),
@@ -24,5 +25,10 @@ urlpatterns = [
     
     path('mind-sphere/psychologist', views.PsycologistManagement, name='psychologist'),
     
-    path('mind-sphere/history', views.History, name='history'),   
+    path('mind-sphere/history', views.History, name='history'),
+    path('mind-sphere/generate-certificate/<int:result_id>', views.GenerateCertificate, name='generate-certificate'),
+    
+    path('mind-sphere/account-settings', views.AccountSettings, name='account-settings'),   
+    path('mind-sphere/change-profile', views.ChangeProfile, name='change-profile'),   
+    path('mind-sphere/change-password', views.ChangePassword, name='change-password'),
 ]
