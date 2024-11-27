@@ -84,16 +84,13 @@
     background: #024D53 !important;
     border: #024D53;
     border-width: 1px; /* Default border thickness */
-    border-style: solid; /* Border style *
-}
-
-.text-warning {
-    color: #FCB316 !important;
+    border-style: solid;
 }
 
 .btn-close {
-    /* filter: invert(1) !important; */
+    filter: invert(1) !important;
 }
+
 /* bootstrap custom end */
 
 /* nav start */
@@ -186,6 +183,7 @@
     position: relative;
     overflow: hidden;
     cursor: pointer;
+    border-radius: 10px;
 }
 
 .card-img-top {
@@ -298,7 +296,7 @@ footer a.nav-link:hover {
 
 .form-control {
     border: 1px solid #ced4da;
-    border-radius: 0.25rem;
+    border-radius: 10px;
 }
 
 .form-control:focus {

@@ -5,197 +5,219 @@ Schedule - Mindsphere
 {% endblock %}
 
 {% block content %}
-<section class="w-100 px-4 pt-5 pt-md-3">
-    <h5 class="fw-bold fs-md-4 fs-5 text-center mb-3">List of <span class="text-primary">Test Schedules</span></h5>
+<style>
+    @media (max-width: 767px) {
+    #create-schedule {
+        height: 2.1rem;        /* Tinggi tombol */
+        font-size: 1rem;     /* Sesuaikan ukuran ikon */
+    }
 
-    <div class="d-flex w-100 justify-content-between align-items-center flex-wrap mt-4 mb-2 gap-3">
-        <form id="form-search" method="GET" autocomplete="off" action="#" class="d-flex align-items-center {% if user.is_superuser %} w-75 {% else %} w-100 {% endif %}">
+    #create-schedule span {
+        display: none;       /* Sembunyikan teks tombol */
+    }
+}
+
+</style>
+
+<section class="w-100 px-4" style="margin-top: 30px;">
+    <h2 class="fw-bold text-center mb-4">List Of <span class="text-primary">Psychological Test</span></h2>
+
+    <div class="d-flex w-100 justify-content-between align-items-center flex-wrap mt-4 mb-4 gap-1">
+        <form id="form-search" method="GET" autocomplete="off" action="#"
+            class="d-flex align-items-center flex-grow-1">
             <div class="form-group w-100 pe-1">
-                <input type="search" class="form-control fs-small" id="search" name="q" placeholder=" " maxlength="150" value="{{ query|default:'' }}"/>
+                <input type="search" class="form-control fs-small" id="search" name="q" placeholder=" " maxlength="150"
+                    value="{{ query|default:'' }}" />
                 <label for="search" class="form-label fs-small bg-white px-1">Search Schedule</label>
             </div>
-            <button type="submit" class="btn btn-primary fs-small fw-bold"><i class="fa-solid fa-magnifying-glass"></i></button>
+            <button type="submit" class="btn btn-primary fs-small fw-bold">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
         </form>
         {% if user.is_superuser %}
-            <button id="create-schedule" class="btn btn-success d-flex align-items-center fs-small fw-bold" data-bs-toggle="modal" data-bs-target="#scheduleModal">
-                <i class="fa-solid fa-plus me-2"></i> Create Schedule
-            </button>
+        <button id="create-schedule" 
+            class="btn btn-success d-flex align-items-center justify-content-center fs-small fw-bold flex-shrink-0"
+            data-bs-toggle="modal" 
+            data-bs-target="#scheduleModal">
+            <i class="fa-solid fa-plus"></i>
+            <span class="d-none d-md-inline ms-2 fw-bold">Create Schedule</span>
+        </button>
         {% endif %}
     </div>
+    
+    
+    
+    
 
     {% if test_schedules %}
-        <div class="flex-wrap w-100 d-flex justify-content-center mt-3 mb-3">
-            {% for test_schedule in test_schedules %}
-                <div class="col-4 p-3">
-                    <div class="test-schedule rounded shadow-btn bg-white overflow-hidden border" style="cursor: pointer;"
-                        data-id="{{ test_schedule.id }}"
-                        data-name="{{ test_schedule.Name }}"
-                        data-psychologist="{{ test_schedule.Psychologist.id }}"
-                        data-psychologist-name="{{ test_schedule.Psychologist.first_name }} {{ test_schedule.Psychologist.last_name }}"
-                        data-description="{{ test_schedule.Description }}"
-                        data-date="{{ test_schedule.Date|date:'Y-m-d\TH:i' }}"
-                        data-date-human="{{ test_schedule.Date|date:'d, M Y H:i' }}"
-                        data-capacity="{{ test_schedule.Capacity }}"
-                        data-count="{{ test_schedule.registered_count }}"
-                        data-location="{{ test_schedule.Location }}"
-                        data-image="{{ test_schedule.Image.url }}">
+    <div class="d-flex flex-wrap justify-content-center gap-5">
+        {% for test_schedule in test_schedules %}
+        <div class="card shadow-btn border border-primary" style="width: 18rem; cursor: pointer"
+            data-id="{{ test_schedule.id }}" data-name="{{ test_schedule.Name }}"
+            data-psychologist="{{ test_schedule.Psychologist.id }}"
+            data-psychologist-name="{{ test_schedule.Psychologist.first_name }} {{ test_schedule.Psychologist.last_name }}"
+            data-description="{{ test_schedule.Description }}" data-date="{{ test_schedule.Date|date:'Y-m-d\TH:i' }}"
+            data-date-human="{{ test_schedule.Date|date:'d, M Y H:i' }}" data-capacity="{{ test_schedule.Capacity }}"
+            data-count="{{ test_schedule.registered_count }}" data-location="{{ test_schedule.Location }}"
+            data-image="{{ test_schedule.Image.url }}">
 
-                        <img src="{{ test_schedule.Image.url }}" class="w-100 m-0 border-bottom border-secondary"
-                            style="height: 180px; object-fit: cover;" alt="{{ test_schedule.Name }}">
-                        <div class="mt-1 mx-3 border-bottom">
-                            <h5 class="fw-semibold text-truncate-2 overflow-hidden" style="height: 45px; font-size: 18px;">
-                                {{ test_schedule.Name }}
-                            </h5>
-                            <div class="row">
-                                <p class="mb-1 col-8" style="font-size: 14px;">
-                                    {{ test_schedule.Psychologist.first_name }} {{ test_schedule.Psychologist.last_name }}
-                                </p>           
-                                <p class="mb-1 col-4 text-end" style="font-size: 14px;">
-                                    {{ test_schedule.registered_count }}/{{ test_schedule.Capacity }}
-                                </p>           
-                            </div>
-                            <p class="text-secondary fs-small text-truncate-3 text-justify overflow-hidden" style="height: 58px;">
-                                {{ test_schedule.Description }}
-                            </p>
-                        </div>
-                        <div class="my-2 mx-3 row justify-content-between align-items-center overflow-hidden"
-                            style="height: 35px;">
-                            <div class="col-6 p-0">
-                                <p class="m-0" style="font-size: 14px;">
-                                    {{ test_schedule.Date|date:"d, M Y H:i" }}
-                                </p>
-                            </div>
-                            <div class="justify-content-end d-flex w-50 gap-1 p-0">
-                                {% if user.is_superuser %}
-                                    <div class="text-end">
-                                        <button class="text-warning fs-4 update-btn border-0 bg-transparent"><i class="fas fa-pen"></i></button>
-                                    </div>
-                                    <div class="text-end">
-                                        <button class="text-danger fs-4 delete-btn border-0 bg-transparent" data-url="{% url 'delete-schedule' pk=test_schedule.id %}"><i class="fas fa-trash-alt"></i></button>
-                                    </div>
-                                {% elif user.role == 2 %}
-                                    {% if test_schedule.registered_count < test_schedule.Capacity and test_schedule.truncated_date > tomorrow %}
-                                        <div class="text-end">
-                                            <button class="btn btn-success btn-sm btn-regis" data-id="{{ test_schedule.id }}">Register</button>
-                                        </div>
-                                    {% else %}
-                                        <div class="text-end">
-                                            <button class="btn btn-danger btn-sm btn-notavailable">Not Available</button>
-                                        </div>
-                                    {% endif %}
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
+            <img src="{{ test_schedule.Image.url }}" class="card-img-top" style="height: 200px; object-fit: cover;"
+                alt="{{ test_schedule.Name }}">
+
+            <div class="mt-1 mx-3 border-bottom">
+                <h5 class="fw-semibold text-truncate-2 mt-2 overflow-hidden" style="height: 45px; font-size: 18px;">
+                    {{ test_schedule.Name }}
+                </h5>
+                <div class="row">
+                    <p class="mb-1 col-8" style="font-size: 14px;">
+                        <span class="fw-semibold mb-2">By <span class="text-primary">{{test_schedule.Psychologist.first_name }} {{ test_schedule.Psychologist.last_name}}</span></span>
+                    </p>
+                    <p class="mb-1 col-4 text-end" style="font-size: 14px;">
+                        {{ test_schedule.registered_count }}/{{ test_schedule.Capacity }}
+                    </p>
                 </div>
-            {% endfor %}
-        </div>
+                <p class="text-secondary text-truncate-3 text-justify overflow-hidden"
+                    style="height: 58px; font-size: 14px;">
+                    {{ test_schedule.Description }}
+                </p>
+            </div>
+            <div class="my-2 mx-3 row justify-content-between align-items-center overflow-hidden" style="height: 35px;">
+                <div class="col-6 p-0">
+                    <p class="m-0 text-secondary" style="font-size: 14px;">
+                        {{ test_schedule.Date|date:"d, M Y H:i" }}
+                    </p>
+                </div>
 
-        <div class="w-100 d-flex justify-content-center mb-2">
-            <nav aria-label="Page navigation" class="text-primary ">
-                <ul class="pagination">
-                    {% if test_schedules.has_previous %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ test_schedules.previous_page_number }}" aria-label="Previous">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>
+                <div class="justify-content-end d-flex w-50 gap-1 p-0">
+                    {% if user.is_superuser %}
+                    <div class="text-end">
+                        <button class="text-warning fs-5 update-btn border-0 bg-transparent"><i
+                                class="fas fa-pen"></i></button>
+                    </div>
+                    <div class="text-end">
+                        <button class="text-danger fs-5 delete-btn border-0 bg-transparent"
+                            data-url="{% url 'delete-schedule' pk=test_schedule.id %}"><i
+                                class="fas fa-trash-alt"></i></button>
+                    </div>
+                    {% elif user.role == 2 %}
+                    <div class="text-end">
+                        <button class="btn btn-success btn-sm btn-regis"
+                            data-id="{{ test_schedule.id }}">Register</button>
+                    </div>
                     {% else %}
-                        <li class="page-item disabled">
-                            <span class="page-link" aria-hidden="true">&laquo;</span>
-                        </li>
+                    <div class="text-end">
+                        <button class="btn btn-danger btn-sm btn-notavailable">Not Available</button>
+                    </div>
+                   
                     {% endif %}
-            
-                    {% if test_schedules.number > 3 %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page=1">1</a>
-                        </li>
-                        <li class="page-item disabled"><span class="page-link">...</span></li>
-                    {% endif %}
-            
-                    {% for num in test_schedules.paginator.page_range %}
-                        {% if num >= test_schedules.number|add:'-2' and num <= test_schedules.number|add:'2' %}
-                            {% if num == test_schedules.number %}
-                                <li class="page-item active">
-                                    <span class="page-link">{{ num }}</span>
-                                </li>
-                            {% else %}
-                                <li class="page-item">
-                                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-                                </li>
-                            {% endif %}
-                        {% endif %}
-                    {% endfor %}
-            
-                    {% if test_schedules.number < test_schedules.paginator.num_pages|add:'-2' %}
-                        <li class="page-item disabled"><span class="page-link">...</span></li>
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ test_schedules.paginator.num_pages }}">
-                                {{ test_schedules.paginator.num_pages }}
-                            </a>
-                        </li>
-                    {% endif %}
-            
-                    {% if test_schedules.has_next %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ test_schedules.next_page_number }}" aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
-                    {% else %}
-                        <li class="page-item disabled">
-                            <span class="page-link" aria-hidden="true">&raquo;</span>
-                        </li>
-                    {% endif %}
-                </ul>
-            </nav>
+                </div>
+            </div>
         </div>
+        {% endfor %}
+    </div>
+
+    <style>
+        .pagination .page-link {
+            color: #036168 !important; /* Warna teks tombol tidak aktif */
+            border-color: #036168; /* Warna border tombol tidak aktif */
+        }
+
+        .pagination .page-link:hover {
+            background-color: #036168; /* Warna latar belakang saat hover */
+            color: #ffffff !important; /* Warna teks saat hover */
+        }
+
+        .pagination .page-item.disabled .page-link {
+            color: #a0a0a0; /* Warna teks tombol tidak aktif dan disabled */
+            pointer-events: none; /* Nonaktifkan klik untuk tombol disabled */
+            background-color: transparent; /* Pastikan tombol disabled transparan */
+            border-color: #036168; /* Warna border tombol disabled */
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #036168; /* Warna background tombol aktif */
+            color: #ffffff !important; /* Warna teks tombol aktif */
+            border-color: #036168; /* Warna border tombol aktif */
+        }
+
+    </style>
+
+    <div class="w-100 d-flex justify-content-center mt-4">
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                {% if test_schedules.has_previous %}
+                <li class="page-item"><a class="page-link"
+                        href="?page={{ test_schedules.previous_page_number }}">&laquo;</a></li>
+                {% endif %}
+
+                {% for num in test_schedules.paginator.page_range %}
+                {% if num == test_schedules.number %}
+                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                {% else %}
+                <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                {% endif %}
+                {% endfor %}
+
+                {% if test_schedules.has_next %}
+                <li class="page-item"><a class="page-link"
+                        href="?page={{ test_schedules.next_page_number }}">&raquo;</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
     {% else %}
-        <div class="alert alert-warning text-center w-100">
-            No schedules found.
-        </div>
+    <div class="alert alert-warning text-center w-100">
+        No schedules found.
+    </div>
     {% endif %}
 </section>
 
 <div class="modal fade" id="scheduleModal" tabindex="-1" aria-labelledby="scheduleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-md">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title fw-semibold" id="scheduleModalLabel">Create Schedule</h5>
-                <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-header bg-primary text-white fw-semibold">
+                <h5 class="modal-title fw-bold" id="scheduleModalLabel">Create Schedule</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="form-schedule" class="d-flex flex-column align-items-center gap-2" method="post" enctype="multipart/form-data" data-url="{% url 'add-schedule' %}">
+                <form id="form-schedule" class="d-flex flex-column align-items-center gap-2" method="post"
+                    enctype="multipart/form-data" data-url="{% url 'add-schedule' %}">
                     {% csrf_token %}
 
                     <div class="my-1 w-100">
                         <div class="text-danger d-none text-end w-100 fs-smaller ps-1 mb-1" id="Name_error"></div>
                         <div class="form-group w-100 position-relative">
-                            <input type="text" class="form-control fs-small" id="Name" name="Name" required placeholder=" " maxlength="150"/>
+                            <input type="text" class="form-control fs-small" id="Name" name="Name" required
+                                placeholder=" " maxlength="150" />
                             <label for="Name" class="form-label fs-small bg-white px-1">Schedule Name</label>
                         </div>
                     </div>
 
                     <div class="my-1 w-100">
-                        <div class="text-danger d-none text-end w-100 fs-smaller ps-1 mb-1" id="Psychologist_error"></div>
+                        <div class="text-danger d-none text-end w-100 fs-smaller ps-1 mb-1" id="Psychologist_error">
+                        </div>
                         <div class="form-group w-100 position-relative">
-                            <select class="form-select form-control fs-small" id="Psychologist" name="Psychologist" required>
+                            <select class="form-select form-control fs-small" id="Psychologist" name="Psychologist"
+                                required>
                                 {% if psychologists %}
-                                    <option value="" disabled selected hidden>Select Psychologist</option>
-                                    {% for psychologist in psychologists %}
-                                    <option value="{{ psychologist.id }}">{{ psychologist.first_name }} {{ psychologist.last_name }}</option>
-                                    {% endfor %}
+                                <option value="" disabled selected hidden>Select Psychologist</option>
+                                {% for psychologist in psychologists %}
+                                <option value="{{ psychologist.id }}">{{ psychologist.first_name }} {{ psychologist.last_name }}</option>
+                                {% endfor %}
                                 {% else %}
-                                    <option value="" disabled selected hidden class="text-danger">Nothing Psychologist</option>
+                                <option value="" disabled selected hidden class="text-danger">Nothing Psychologist
+                                </option>
                                 {% endif %}
                             </select>
                         </div>
                     </div>
-                    
+
                     <div class="my-1 w-100">
-                        <div class="text-danger d-none text-end w-100 fs-smaller ps-1 mb-1" id="Description_error"></div>
+                        <div class="text-danger d-none text-end w-100 fs-smaller ps-1 mb-1" id="Description_error">
+                        </div>
                         <div class="form-group w-100 position-relative">
-                            <textarea class="form-control fs-smaller" id="Description" name="Description" rows="4" required></textarea>
+                            <textarea class="form-control fs-smaller" id="Description" name="Description" rows="4"
+                                required></textarea>
                             <label for="Description" class="form-label fs-small bg-white px-1">Description</label>
                         </div>
                     </div>
@@ -204,14 +226,16 @@ Schedule - Mindsphere
                         <div class="col-6 ps-0">
                             <div class="text-danger d-none text-end w-100 fs-smaller mb-1" id="Date_error"></div>
                             <div class="form-group w-100 position-relative">
-                                <input type="datetime-local" class="form-control fs-small" id="Date" Name="Date" required placeholder="Date"/>
+                                <input type="datetime-local" class="form-control fs-small" id="Date" Name="Date"
+                                    required placeholder="Date" />
                                 <label for="Date" class="form-label fs-small bg-white px-1">Date</label>
                             </div>
                         </div>
                         <div class="col-6 pe-0">
                             <div class="text-danger d-none text-end w-100 fs-smaller mb-1" id="Capacity_error"></div>
                             <div class="form-group w-100 position-relative">
-                                <input type="number" class="form-control fs-small" id="Capacity" Name="Capacity" required placeholder=" " maxlength="3"/>
+                                <input type="number" class="form-control fs-small" id="Capacity" Name="Capacity"
+                                    required placeholder=" " maxlength="3" />
                                 <label for="Capacity" class="form-label fs-small bg-white px-1">Capacity</label>
                             </div>
                         </div>
@@ -220,7 +244,8 @@ Schedule - Mindsphere
                     <div class="my-1 w-100">
                         <div class="text-danger d-none text-end w-100 fs-smaller ps-1 mb-1" id="Location_error"></div>
                         <div class="form-group w-100 position-relative">
-                            <input type="text" class="form-control fs-small" id="Location" Name="Location" required placeholder=" " maxlength="150"/>
+                            <input type="text" class="form-control fs-small" id="Location" Name="Location" required
+                                placeholder=" " maxlength="150" />
                             <label for="Location" class="form-label fs-small bg-white px-1">Location</label>
                         </div>
                     </div>
@@ -228,8 +253,10 @@ Schedule - Mindsphere
                     <div class="w-100 mb-1 mt-3 row">
                         <div class="text-danger d-none text-end w-100 fs-smaller ps-1 mb-1" id="Image_error"></div>
                         <div class="form-group col-6 position-relative px-0">
-                            <input type="file" class="form-control fs-small" id="Image" Name="Image" placeholder="Image" maxlength="150"/>
-                            <label for="Image" class="form-label fs-small bg-white px-1" style="top: -18px;">Image</label>
+                            <input type="file" class="form-control fs-small" id="Image" Name="Image" placeholder="Image"
+                                maxlength="150" />
+                            <label for="Image" class="form-label fs-small bg-white px-1"
+                                style="top: -18px;">Image</label>
                         </div>
                         <div class="col-6 text-center">
                             <img id="ImagePreview" src="#" alt="No Image" class="w-100 d-none border rounded">
@@ -247,22 +274,25 @@ Schedule - Mindsphere
 </div>
 
 <div class="modal fade" id="scheduleDetailModal" tabindex="-1" aria-labelledby="scheduleDetailModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-md">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white fw-semibold">
-                <h5 class="modal-title" id="scheduleDetailModalLabel">Schedule Details</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title fw-bold" id="scheduleDetailModalLabel">Schedule Details</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="w-100">
                     <div class="ratio ratio-21x9 mb-3">
-                        <img id="schedule-image" src="" alt="Schedule Image" class="w-100 h-100 rounded border" style="object-fit: cover;">
+                        <img id="schedule-image" src="" alt="Schedule Image" class="w-100 h-100 rounded border"
+                            style="object-fit: cover;">
                     </div>
                     <div class="px-2 d-flex flex-column">
                         <h4 id="schedule-name" class="fs-4 fw-semibold"></h4>
                         <div class="row px-2">
                             <div class="col-6 px-1">
-                                <p class="fw-semibold mb-2"> By <span id="schedule-psychologist" class="text-primary"></span></p>
+                                <p class="fw-semibold mb-2"> By <span id="schedule-psychologist"
+                                        class="text-primary"></span></p>
                             </div>
                             <div class="col-6 px-1 text-end">
                                 <p id="schedule-capacity" class="mb-2"></p>
@@ -272,7 +302,7 @@ Schedule - Mindsphere
                         <div class="row px-2">
                             <div class="col-6 px-1">
                                 <p class="m-0">
-                                    <span class="fw-semibold">Test Location:</span>  
+                                    <span class="fw-semibold">Test Location:</span>
                                     <span id="schedule-location"></span>
                                 </p>
                             </div>
@@ -283,23 +313,13 @@ Schedule - Mindsphere
                     </div>
                 </div>
             </div>
-            <div class="modal-footer d-none" id="regis">
-                <form id="form-regis" method="post" action="">
-                    {% csrf_token %}
-                    <input type="hidden" id="schedule-id" name="schedule-id">
-                </form>
-                <div class="d-flex gap-2">
-                    <button type="btn-close" class="btn fw-semibold btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn fw-semibold btn-success" form="form-regis">Register For This Test</button>
-                </div>
-            </div>
         </div>
     </div>
 </div>
 
 <script>
     $(document).ready(function () {
-        function SuccessPopUp(message){
+        function SuccessPopUp(message) {
             Swal.fire({
                 icon: 'success',
                 title: 'Successfully!',
@@ -311,7 +331,7 @@ Schedule - Mindsphere
             });
         }
 
-        function ErrorPopUp(message){
+        function ErrorPopUp(message) {
             Swal.fire({
                 icon: 'error',
                 title: 'Failed!',
@@ -320,7 +340,7 @@ Schedule - Mindsphere
                 confirmButtonColor: '#dc3545',
             });
         }
-        
+
         function resetErrors(formSelector) {
             $(`${formSelector} .text-danger`).each(function () {
                 $(this).text("");
@@ -338,14 +358,14 @@ Schedule - Mindsphere
                     $(this).val("");
                 }
             });
-        
+
             $(`${formSelector} .text-danger`).each(function () {
                 $(this).text("").addClass("d-none");
             });
-        
+
             $("#ImagePreview").attr("src", "").addClass("d-none");
             $("#TextPreview").removeClass("d-none");
-        }        
+        }
         resetFormAndErrors('#form-schedule');
 
         function onLoading() {
@@ -358,20 +378,20 @@ Schedule - Mindsphere
             $('.overlay').addClass('d-none');
         }
 
-        $('#Image').on('change', function(event) {
+        $('#Image').on('change', function (event) {
             const file = event.target.files[0];
             const preview = $('#ImagePreview');
             const text = $('#TextPreview');
-    
+
             if (file) {
                 const reader = new FileReader();
-    
-                reader.onload = function(e) {
+
+                reader.onload = function (e) {
                     preview.attr('src', e.target.result);
                     preview.removeClass('d-none');
                     text.addClass('d-none');
                 };
-                
+
                 reader.readAsDataURL(file);
             } else {
                 text.removeClass('d-none');
@@ -385,7 +405,7 @@ Schedule - Mindsphere
             resetErrors('#form-schedule');
             let formData = new FormData(this);
             let formUrl = $(this).attr('data-url');
-    
+
             $.ajax({
                 url: formUrl,
                 type: 'POST',
@@ -402,7 +422,7 @@ Schedule - Mindsphere
                     } else {
                         $.each(response.errors, function (field, errors) {
                             let errorDiv = $(`#${field}_error`);
-                            errorDiv.removeClass('d-none').text('*'+errors.join(', '));
+                            errorDiv.removeClass('d-none').text('*' + errors.join(', '));
                         });
                         ErrorPopUp(response.message);
                     }
@@ -417,7 +437,7 @@ Schedule - Mindsphere
         $('#scheduleModal').on('hidden.bs.modal', function () {
             resetFormAndErrors("#form-schedule");
         });
-        
+
         $('#scheduleDetailModal').on('hidden.bs.modal', function () {
             $('#regis').addClass('d-none');
         });
@@ -425,9 +445,9 @@ Schedule - Mindsphere
         $('.update-btn').on('click', function (e) {
             e.stopPropagation();
             let button = $(this);
-    
-            let parent = button.closest('.test-schedule');
-    
+
+            let parent = button.closest('.card');
+
             let scheduleId = parent.data('id');
             let name = parent.data('name');
             let psychologist = parent.data('psychologist');
@@ -436,20 +456,20 @@ Schedule - Mindsphere
             let capacity = parent.data('capacity');
             let location = parent.data('location');
             let image = parent.data('image');
-    
+
             let baseUrl = "{% url 'update-schedule' 0 %}";
             let dynamicUrl = baseUrl.replace('0', scheduleId);
             $('#form-schedule').attr('data-url', dynamicUrl);
-    
+
             $('#scheduleModalLabel').text('Update Schedule');
-    
+
             $('#Name').val(name);
             $('#Psychologist').val(psychologist);
             $('#Description').val(description);
             $('#Date').val(date);
             $('#Capacity').val(capacity);
             $('#Location').val(location);
-    
+
             if (image) {
                 $('#ImagePreview').attr('src', image).removeClass('d-none');
                 $('#TextPreview').addClass('d-none');
@@ -457,21 +477,21 @@ Schedule - Mindsphere
                 $('#ImagePreview').addClass('d-none');
                 $('#TextPreview').removeClass('d-none');
             }
-    
+
             $('#scheduleModal').modal('show');
-        });        
+        });
 
         $('#create-schedule').on('click', function () {
             $('#form-schedule').attr('data-url', "{% url 'add-schedule' %}");
             $('#scheduleModalLabel').text('Create Schedule');
             $('#scheduleModal').modal('show');
         });
-        
+
         $('.delete-btn').on('click', function (e) {
             e.stopPropagation();
             let formUrl = $(this).attr('data-url');
             let element = $(this);
-            
+
             Swal.fire({
                 title: 'Are you sure you want to delete this schedule?',
                 text: "All data related to this schedule will be lost and you will not be able to restore it.",
@@ -501,9 +521,9 @@ Schedule - Mindsphere
                     });
                 }
             });
-        });        
-        
-        $('.test-schedule').on('click', function () {
+        });
+
+        $('.card').on('click', function () {
             const name = $(this).data('name');
             const psychologist = $(this).data('psychologist-name');
             const description = $(this).data('description');
@@ -511,7 +531,7 @@ Schedule - Mindsphere
             const capacity = $(this).data('count') + '/' + $(this).data('capacity');
             const location = $(this).data('location');
             const image = $(this).data('image');
-    
+
             $('#schedule-name').text(name);
             $('#schedule-psychologist').text(psychologist);
             $('#schedule-description').text(description);
@@ -519,7 +539,7 @@ Schedule - Mindsphere
             $('#schedule-capacity').text(capacity);
             $('#schedule-location').text(location);
             $('#schedule-image').attr('src', image);
-    
+
             $('#scheduleDetailModal').modal('show');
         });
 
@@ -533,14 +553,14 @@ Schedule - Mindsphere
             $('#form-regis').attr('data-url', dynamicUrl);
 
         });
-        
+
         $('#form-regis').on('submit', function (e) {
             e.preventDefault();
             onLoading();
             let formData = new FormData(this);
             let formUrl = $(this).attr('data-url');
             console.log(formUrl);
-    
+
             $.ajax({
                 url: formUrl,
                 type: 'POST',

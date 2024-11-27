@@ -6,166 +6,152 @@ Schedule List - MindSphere
 
 {% block content %}
 <section class="w-100 px-4 container" style="margin-top: 100px;">
-    <h1 class="fw-bold text-center mb-4">List Of <span class="text-primary">Psychological Test</span></span></h1>
+    <h1 class="fw-bold text-center mb-4">List Of <span class="text-primary">Psychological Test</span></h1>
 
-    <div class="d-flex flex-column w-100 gap-3 mt-4 mb-2">
-        <form id="form-search" method="GET" autocomplete="off" action="#" 
-              class="d-flex align-items-center w-100 gap-2">
+    <div class="d-flex flex-column w-100 gap-3 my-4">
+        <form id="form-search" method="GET" autocomplete="off" action="#" class="d-flex align-items-center w-100 gap-2">
             <div class="form-group flex-grow-1 position-relative">
-                <input type="search" 
-                       class="form-control fs-small pe-4" 
-                       id="search" name="q" 
-                       placeholder="Search Schedule" 
-                       maxlength="150" 
-                       value="{{ query|default:'' }}">
+                <input type="search" class="form-control fs-small pe-4" id="search" name="q"
+                    placeholder="Search Schedule" maxlength="150" value="{{ query|default:'' }}">
             </div>
-            <button type="submit" class="btn btn-primary fs-small fw-bold"><i class="fa-solid fa-magnifying-glass"></i></button>
+            <button type="submit" class="btn btn-primary fs-small fw-bold"><i
+                    class="fa-solid fa-magnifying-glass"></i></button>
         </form>
     </div>
-    
 
     {% if test_schedules %}
-        <div class="flex-wrap w-100 d-flex justify-content-center mb-3">
-            {% for test_schedule in test_schedules %}
-                <div class="col-4 p-3">
-                    <div class="test-schedule rounded shadow-btn bg-white overflow-hidden border" style="cursor: pointer;"
-                        data-id="{{ test_schedule.id }}"
-                        data-name="{{ test_schedule.Name }}"
-                        data-psychologist="{{ test_schedule.Psychologist.id }}"
-                        data-psychologist-name="{{ test_schedule.Psychologist.first_name }} {{ test_schedule.Psychologist.last_name }}"
-                        data-description="{{ test_schedule.Description }}"
-                        data-date="{{ test_schedule.Date|date:'Y-m-d\TH:i' }}"
-                        data-date-human="{{ test_schedule.Date|date:'d, M Y H:i' }}"
-                        data-capacity="{{ test_schedule.Capacity }}"
-                        data-count="{{ test_schedule.registered_count }}"
-                        data-location="{{ test_schedule.Location }}"
-                        data-image="{{ test_schedule.Image.url }}">
+    <div class="d-flex flex-wrap justify-content-center gap-5">
+        {% for test_schedule in test_schedules %}
+        <div class="card shadow-btn border border-primary" style="width: 18rem; cursor: pointer;"
+            data-id="{{ test_schedule.id }}" data-name="{{ test_schedule.Name }}"
+            data-psychologist="{{ test_schedule.Psychologist.id }}"
+            data-psychologist-name="{{ test_schedule.Psychologist.first_name }} {{ test_schedule.Psychologist.last_name }}"
+            data-description="{{ test_schedule.Description }}" data-date="{{ test_schedule.Date|date:'Y-m-d\TH:i' }}"
+            data-date-human="{{ test_schedule.Date|date:'d, M Y H:i' }}" data-capacity="{{ test_schedule.Capacity }}"
+            data-count="{{ test_schedule.registered_count }}" data-location="{{ test_schedule.Location }}"
+            data-image="{{ test_schedule.Image.url }}">
 
-                        <img src="{{ test_schedule.Image.url }}" class="w-100 m-0 border-bottom border-secondary"
-                            style="height: 180px; object-fit: cover;" alt="{{ test_schedule.Name }}">
-                        <div class="mt-1 mx-3 border-bottom">
-                            <h5 class="fw-semibold text-truncate-2 overflow-hidden" style="height: 45px; font-size: 18px;">
-                                {{ test_schedule.Name }}
-                            </h5>
-                            <div class="row">
-                                <p class="mb-1 col-8" style="font-size: 14px;">
-                                    {{ test_schedule.Psychologist.first_name }} {{ test_schedule.Psychologist.last_name }}
-                                </p>           
-                                <p class="mb-1 col-4 text-end" style="font-size: 14px;">
-                                    {{ test_schedule.registered_count }}/{{ test_schedule.Capacity }}
-                                </p>           
-                            </div>
-                            <p class="text-secondary fs-small text-truncate-3 text-justify overflow-hidden" style="height: 58px;">
-                                {{ test_schedule.Description }}
-                            </p>
+            <img src="{{ test_schedule.Image.url }}" class="card-img-top" style="height: 200px; object-fit: cover;"
+                alt="{{ test_schedule.Name }}">
+
+            <div class="mt-1 mx-3 border-bottom">
+                <h5 class="fw-semibold text-truncate-2 mt-2 overflow-hidden" style="height: 45px; font-size: 18px;">
+                    {{ test_schedule.Name }}
+                </h5>
+                <div class="row">
+                    <p class="mb-1 col-8" style="font-size: 14px;">
+                        <span class="fw-semibold mb-2">By <span class="text-primary">{{test_schedule.Psychologist.first_name }} {{ test_schedule.Psychologist.last_name}}</span></span>
+                    </p>
+                    <p class="mb-1 col-4 text-end" style="font-size: 14px;">
+                        {{ test_schedule.registered_count }}/{{ test_schedule.Capacity }}
+                    </p>
+                </div>
+                <p class="text-secondary text-truncate-3 text-justify overflow-hidden"
+                    style="height: 58px; font-size: 14px;">
+                    {{ test_schedule.Description }}
+                </p>
+            </div>
+            <div class="my-2 mx-3 row justify-content-between align-items-center overflow-hidden" style="height: 35px;">
+                <div class="col-6 p-0">
+                    <p class="m-0 text-secondary" style="font-size: 14px;">
+                        {{ test_schedule.Date|date:"d, M Y H:i" }}
+                    </p>
+                </div>
+                
+                <div class="justify-content-end d-flex w-50 gap-1 p-0">
+                    {% if test_schedule.registered_count < test_schedule.Capacity and test_schedule.truncated_date > tomorrow %}
+                        <div class="text-end">
+                            <button class="btn btn-success btn-sm btn-regis">Register</button>
                         </div>
-                        <div class="my-2 mx-3 row justify-content-between align-items-center overflow-hidden"
-                            style="height: 35px;">
-                            <div class="col-6 p-0">
-                                <p class="m-0" style="font-size: 14px;">
-                                    {{ test_schedule.Date|date:"d, M Y H:i" }}
-                                </p>
-                            </div>
-                            <div class="justify-content-end d-flex w-50 gap-1 p-0">
-                                {% if test_schedule.registered_count < test_schedule.Capacity and test_schedule.truncated_date > tomorrow %}
-                                    <div class="text-end">
-                                        <button class="btn btn-success btn-sm btn-regis">Register</button>
-                                    </div>
-                                {% else %}
-                                    <div class="text-end">
-                                        <button class="btn btn-danger btn-sm btn-notavailable">Not Available</button>
-                                    </div>
-                                {% endif %}
-                            </div>
+                        {% else %}
+                        <div class="text-end">
+                            <button class="btn btn-danger btn-sm btn-notavailable">Not Available</button>
                         </div>
+                        {% endif %}
                     </div>
                 </div>
-            {% endfor %}
+            </div>
         </div>
+        {% endfor %}
+    </div>
 
-        <div class="w-100 d-flex justify-content-center mb-2">
-            <nav aria-label="Page navigation" class="text-primary ">
-                <ul class="pagination">
-                    {% if test_schedules.has_previous %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ test_schedules.previous_page_number }}" aria-label="Previous">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>
-                    {% else %}
-                        <li class="page-item disabled">
-                            <span class="page-link" aria-hidden="true">&laquo;</span>
-                        </li>
-                    {% endif %}
-            
-                    {% if test_schedules.number > 3 %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page=1">1</a>
-                        </li>
-                        <li class="page-item disabled"><span class="page-link">...</span></li>
-                    {% endif %}
-            
-                    {% for num in test_schedules.paginator.page_range %}
-                        {% if num >= test_schedules.number|add:'-2' and num <= test_schedules.number|add:'2' %}
-                            {% if num == test_schedules.number %}
-                                <li class="page-item active">
-                                    <span class="page-link">{{ num }}</span>
-                                </li>
-                            {% else %}
-                                <li class="page-item">
-                                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-                                </li>
-                            {% endif %}
-                        {% endif %}
-                    {% endfor %}
-            
-                    {% if test_schedules.number < test_schedules.paginator.num_pages|add:'-2' %}
-                        <li class="page-item disabled"><span class="page-link">...</span></li>
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ test_schedules.paginator.num_pages }}">
-                                {{ test_schedules.paginator.num_pages }}
-                            </a>
-                        </li>
-                    {% endif %}
-            
-                    {% if test_schedules.has_next %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ test_schedules.next_page_number }}" aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
-                    {% else %}
-                        <li class="page-item disabled">
-                            <span class="page-link" aria-hidden="true">&raquo;</span>
-                        </li>
-                    {% endif %}
-                </ul>
-            </nav>
-        </div>
+    <style>
+        .pagination .page-link {
+            color: #036168 !important; /* Warna teks tombol tidak aktif */
+            border-color: #036168; /* Warna border tombol tidak aktif */
+        }
+
+        .pagination .page-link:hover {
+            background-color: #036168; /* Warna latar belakang saat hover */
+            color: #ffffff !important; /* Warna teks saat hover */
+        }
+
+        .pagination .page-item.disabled .page-link {
+            color: #a0a0a0; /* Warna teks tombol tidak aktif dan disabled */
+            pointer-events: none; /* Nonaktifkan klik untuk tombol disabled */
+            background-color: transparent; /* Pastikan tombol disabled transparan */
+            border-color: #036168; /* Warna border tombol disabled */
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #036168; /* Warna background tombol aktif */
+            color: #ffffff !important; /* Warna teks tombol aktif */
+            border-color: #036168; /* Warna border tombol aktif */
+        }
+
+    </style>
+
+    <div class="w-100 d-flex justify-content-center mt-4">
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                {% if test_schedules.has_previous %}
+                <li class="page-item"><a class="page-link"
+                        href="?page={{ test_schedules.previous_page_number }}">&laquo;</a></li>
+                {% endif %}
+
+                {% for num in test_schedules.paginator.page_range %}
+                {% if num == test_schedules.number %}
+                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                {% else %}
+                <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                {% endif %}
+                {% endfor %}
+
+                {% if test_schedules.has_next %}
+                <li class="page-item"><a class="page-link"
+                        href="?page={{ test_schedules.next_page_number }}">&raquo;</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
     {% else %}
-        <div class="alert alert-warning text-center w-100">
-            No schedules found.
-        </div>
+    <div class="alert alert-warning text-center w-100">
+        No schedules found.
+    </div>
     {% endif %}
 </section>
 
+
+
 <div class="modal fade" id="scheduleDetailModal" tabindex="-1" aria-labelledby="scheduleDetailModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-md">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white fw-semibold">
-                <h5 class="modal-title" id="scheduleDetailModalLabel">Schedule Details</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title fw-bold" id="scheduleDetailModalLabel">Schedule Details</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="w-100">
                     <div class="ratio ratio-21x9 mb-3">
-                        <img id="schedule-image" src="" alt="Schedule Image" class="w-100 h-100 rounded border" style="object-fit: cover;">
+                        <img id="schedule-image" src="" alt="Schedule Image" class="w-100 h-100 rounded border"
+                            style="object-fit: cover;">
                     </div>
                     <div class="px-2 d-flex flex-column">
                         <h4 id="schedule-name" class="fs-4 fw-semibold"></h4>
                         <div class="row px-2">
                             <div class="col-6 px-1">
-                                <p class="fw-semibold mb-2"> By <span id="schedule-psychologist" class="text-primary"></span></p>
+                                <p class="fw-semibold mb-2"> By <span id="schedule-psychologist"
+                                        class="text-primary"></span></p>
                             </div>
                             <div class="col-6 px-1 text-end">
                                 <p id="schedule-capacity" class="mb-2"></p>
@@ -175,7 +161,7 @@ Schedule List - MindSphere
                         <div class="row px-2">
                             <div class="col-6 px-1">
                                 <p class="m-0">
-                                    <span class="fw-semibold">Test Location:</span>  
+                                    <span class="fw-semibold">Test Location:</span>
                                     <span id="schedule-location"></span>
                                 </p>
                             </div>
@@ -190,9 +176,10 @@ Schedule List - MindSphere
     </div>
 </div>
 
+
 <script>
-    $(document).ready(function() {
-        $('.test-schedule').on('click', function () {
+    $(document).ready(function () {
+        $('.card').on('click', function () {
             const name = $(this).data('name');
             const psychologist = $(this).data('psychologist-name');
             const description = $(this).data('description');
@@ -200,7 +187,7 @@ Schedule List - MindSphere
             const capacity = $(this).data('count') + '/' + $(this).data('capacity');
             const location = $(this).data('location');
             const image = $(this).data('image');
-    
+
             $('#schedule-name').text(name);
             $('#schedule-psychologist').text(psychologist);
             $('#schedule-description').text(description);
@@ -208,13 +195,13 @@ Schedule List - MindSphere
             $('#schedule-capacity').text(capacity);
             $('#schedule-location').text(location);
             $('#schedule-image').attr('src', image);
-    
+
             $('#scheduleDetailModal').modal('show');
         });
 
         $('.btn-regis').on('click', function (e) {
             e.stopPropagation();
-            
+
             Swal.fire({
                 title: 'You have to sign in first',
                 icon: 'info',
@@ -227,9 +214,14 @@ Schedule List - MindSphere
                     window.location.href = "{% url 'sign-in' %}";
                 }
             });
-        });        
-        
+        });
+
     });
+
+    $('.card').on('click', function () {
+        console.log("Card clicked!"); // Debugging
+    });
+
 </script>
 
 {% endblock %}
