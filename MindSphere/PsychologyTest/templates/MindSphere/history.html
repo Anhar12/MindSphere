@@ -22,6 +22,8 @@ History - Mindsphere
     {% endif %}
 </section>
 
+{% include 'loading-spinner.html' %}
+
 <script>
     $(document).ready(function () {
         function onLoading() {
@@ -169,6 +171,7 @@ History - Mindsphere
         $(document).on('click', '.btn-print', function (e) {
             e.preventDefault();
             e.stopPropagation();
+            onLoading();
         
             const url = $(this).data('url');
         
@@ -179,16 +182,21 @@ History - Mindsphere
                     responseType: 'blob'
                 },
                 success: function (data, status, xhr) {
-                    const contentDisposition = xhr.getResponseHeader('Content-Disposition');
-                    const fileName = contentDisposition ? contentDisposition.split('filename=')[1].replace(/"/g, '') : 'Certificate.pdf';
+                    onLoaded();
                     const blob = new Blob([data], { type: 'application/pdf' });
-                    const link = document.createElement('a');
-                    link.href = window.URL.createObjectURL(blob);
-                    link.download = fileName;
-                    link.click();
-                    SuccessPopUp('Certificate downloaded successfully!');
+                    const url = window.URL.createObjectURL(blob);
+                    window.open(url, '_blank'); // Membuka PDF di tab baru untuk preview
+                    // const contentDisposition = xhr.getResponseHeader('Content-Disposition');
+                    // const fileName = contentDisposition ? contentDisposition.split('filename=')[1].replace(/"/g, '') : 'Certificate.pdf';
+                    // const blob = new Blob([data], { type: 'application/pdf' });
+                    // const link = document.createElement('a');
+                    // link.href = window.URL.createObjectURL(blob);
+                    // link.download = fileName;
+                    // link.click();
+                    // SuccessPopUp('Certificate downloaded successfully!');
                 },
                 error: function (xhr, status, error) {
+                    onLoaded();
                     console.error('Error:', error);
                     ErrorPopUp('Failed to download certificate.');
                 }
