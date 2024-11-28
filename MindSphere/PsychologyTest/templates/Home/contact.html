@@ -14,12 +14,8 @@ Contact - MindSphere
         </p>
         <div class="d-flex flex-column flex-lg-row justify-content-between align-items-center">
             <!-- Kolom Lokasi -->
-            <div class="col-lg-7">
-                <div class="container py-5">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7979.370091756907!2d117.13379139876395!3d-0.4683125027498342!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2df67fcf7787d563%3A0x7c3990eec8e1b7f!2sAngkringan%20Rumah%20Dinas%20(Kopi%20Tarik)!5e0!3m2!1sid!2sid!4v1726289317558!5m2!1sid!2sid" 
-                        width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
-                    </iframe>
-                </div>
+            <div class="col-lg-7 py-5">
+                <div id="map" class="container py-5" style="width: 100%; height: 400px; border: 0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></div>
             </div>
 
             <!-- Kolom Kontak & Media Sosial -->
@@ -60,5 +56,25 @@ Contact - MindSphere
         </div>
     </div>
 </section>
+
+<!-- Tambahkan Leaflet dan Script Map -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script>
+    // API Key MapTiler
+    const apiKey = "bLN1RzmHXXyaaokRSUdk";
+
+    // Inisialisasi peta
+    const map = L.map('map').setView([-0.4683125, 117.1337914], 15);
+
+    // Tambahkan layer peta dari MapTiler
+    L.tileLayer(`https://api.maptiler.com/maps/basic-v2/{z}/{x}/{y}.png?key=${apiKey}`, {
+        attribution: '&copy; <a href="https://www.maptiler.com/">MapTiler</a> contributors',
+    }).addTo(map);
+
+    // Tambahkan marker di lokasi tertentu
+    const marker = L.marker([-0.4683125, 117.1337914]).addTo(map);
+    marker.bindPopup("<b>MindSphere</b><br>Samarinda").openPopup();
+</script>
 
 {% endblock %}
