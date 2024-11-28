@@ -323,8 +323,14 @@ def RegisterSchedule(request, pk):
                 'message': 'Test schedule has already passed.'
             })
         
-        registration = Registrations(User=request.user, TestSchedule=schedule)
-        registration.save()
+        try:
+            registration = Registrations(User=request.user, TestSchedule=schedule)
+            registration.save()
+        except ValidationError as e:
+            return JsonResponse({
+                'status': 'error',
+                'message': str(e)
+            })
         
         return JsonResponse({'status': 'success', 'message': 'Registration successful!'})
 
@@ -381,6 +387,7 @@ def DeleteRegistration(request, pk):
 def AddResult(request, pk):
     if request.method == 'POST':
         form = ResultForm(request.POST)
+        print(request.POST.get('Summary'))
         if form.is_valid():
             registration = Registrations.objects.get(id=pk)
             if not registration:
@@ -389,11 +396,18 @@ def AddResult(request, pk):
                     'message': 'Registration not found.'
                 })
             
-            result = form.save(commit=False)
-            result.IsDone = True if request.POST.get('IsDone') == 'True' else False
-            result.Registration = registration
-            
-            form.save()
+            try:
+                result = form.save(commit=False)
+                result.IsDone = True if request.POST.get('IsDone') == 'True' else False
+                result.Registration = registration
+                
+                form.save()
+            except ValidationError as e:
+                return JsonResponse({
+                    'status': 'error',
+                    'message': str(e)
+                })
+                
             return JsonResponse({
                 'status': 'success',
                 'message': 'Result added successfully!'

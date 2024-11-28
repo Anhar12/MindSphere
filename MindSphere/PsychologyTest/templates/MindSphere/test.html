@@ -115,6 +115,12 @@ Test Psychologist - Mindsphere
             });
         }
 
+        let currentTime = new Date();
+
+        function updateTimeAndCheck(){
+            currentTime = new Date();
+        }
+
         const regisData = {{ registrations_json|safe }};
 
         function formatDate(params) {
@@ -143,19 +149,35 @@ Test Psychologist - Mindsphere
                     cellRenderer: function (params) {
                         const buttonContainer = document.createElement('div');
                         {% if user.role == 1 %}
-                            const editButton = document.createElement('button');
-                            editButton.innerHTML = '<i class="fas fa-pen"></i>';
-                            editButton.className = 'btn btn-success btn-sm me-1';
-                            editButton.addEventListener('click', function () {
-                                
-                                $('#resultModal').modal('show');
-                                $('#form-result').find('#name').val(params.data.name);
-                                $('#form-result').find('#test').val(params.data.schedule_name);
-                                let baseUrl = "{% url 'add-result' 0 %}";
-                                let dynamicUrl = baseUrl.replace('0', params.data.id);
-                                $('#form-result').attr('data-url', dynamicUrl);
-                            });
-                            buttonContainer.appendChild(editButton);
+                            if (currentTime > new Date(params.data.date)) {
+                                const editButton = document.createElement('button');
+                                editButton.innerHTML = '<i class="fas fa-pen"></i>';
+                                editButton.className = 'btn btn-success btn-sm me-1';
+                                editButton.addEventListener('click', function () {
+                                    
+                                    $('#resultModal').modal('show');
+                                    $('#form-result').find('#name').val(params.data.name);
+                                    $('#form-result').find('#test').val(params.data.schedule_name);
+                                    let baseUrl = "{% url 'add-result' 0 %}";
+                                    let dynamicUrl = baseUrl.replace('0', params.data.id);
+                                    $('#form-result').attr('data-url', dynamicUrl);
+                                });
+                                buttonContainer.appendChild(editButton);
+                            } else {
+                                const editButton = document.createElement('button');
+                                editButton.innerHTML = '<i class="fa-regular fa-calendar-xmark"></i>';
+                                editButton.className = 'btn btn-danger btn-sm me-1';
+                                editButton.addEventListener('click', function () {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Access denied!',
+                                        text: 'The test is not finished yet! You are not allowed to input the results now.',
+                                        confirmButtonText: 'Ok',
+                                        confirmButtonColor: '#dc3545',
+                                    });
+                                });
+                                buttonContainer.appendChild(editButton);
+                            }
                         {% elif user.role == 2 %}
                             const deleteButton = document.createElement('button');
                             deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>';
@@ -302,7 +324,6 @@ Test Psychologist - Mindsphere
                     onLoading();
                     let formData = new FormData(this);
                     let formUrl = $(this).attr('data-url');
-            
                     $.ajax({
                         url: formUrl,
                         type: 'POST',
@@ -317,6 +338,10 @@ Test Psychologist - Mindsphere
                             if (response.status === 'success') {
                                 SuccessPopUp(response.message);
                             } else {
+                                if (response.message.includes('Summary is required')) {
+                                    let errorDiv = $('#Summary_error');
+                                    errorDiv.removeClass('d-none').text('*Summary is required');
+                                }
                                 ErrorPopUp(response.message);
                             }
                         },
@@ -328,6 +353,8 @@ Test Psychologist - Mindsphere
                 }
             });
         });
+
+        setInterval(updateTimeAndCheck, 1000);
     });
 </script>
 

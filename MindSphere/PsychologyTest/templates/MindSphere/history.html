@@ -183,17 +183,17 @@ History - Mindsphere
                 },
                 success: function (data, status, xhr) {
                     onLoaded();
-                    const blob = new Blob([data], { type: 'application/pdf' });
-                    const url = window.URL.createObjectURL(blob);
-                    window.open(url, '_blank'); // Membuka PDF di tab baru untuk preview
-                    // const contentDisposition = xhr.getResponseHeader('Content-Disposition');
-                    // const fileName = contentDisposition ? contentDisposition.split('filename=')[1].replace(/"/g, '') : 'Certificate.pdf';
                     // const blob = new Blob([data], { type: 'application/pdf' });
-                    // const link = document.createElement('a');
-                    // link.href = window.URL.createObjectURL(blob);
-                    // link.download = fileName;
-                    // link.click();
-                    // SuccessPopUp('Certificate downloaded successfully!');
+                    // const url = window.URL.createObjectURL(blob);
+                    // window.open(url, '_blank'); // Membuka PDF di tab baru untuk preview
+                    const contentDisposition = xhr.getResponseHeader('Content-Disposition');
+                    const fileName = contentDisposition ? contentDisposition.split('filename=')[1].replace(/"/g, '') : 'Certificate.pdf';
+                    const blob = new Blob([data], { type: 'application/pdf' });
+                    const link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = fileName;
+                    link.click();
+                    SuccessPopUp('Certificate downloaded successfully!');
                 },
                 error: function (xhr, status, error) {
                     onLoaded();

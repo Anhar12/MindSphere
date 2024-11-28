@@ -594,6 +594,17 @@ Schedule - Mindsphere
             });
         });
 
+        $('.btn-notavailable').on('click', function (e) {
+            e.stopPropagation();
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Not Available!',
+                text: 'This schedule is full or not available anymore.',
+                confirmButtonText: 'Ok',
+                confirmButtonColor: '#dc3545',
+            });
+        });
     });    
 </script>
 

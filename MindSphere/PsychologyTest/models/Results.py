@@ -32,6 +32,9 @@ class Results(models.Model):
         if not self.Summary and not self.IsDone:
             self.Summary = "You're not completed this test"
         
+        if self.Date < self.Registration.TestSchedule.Date:
+            raise ValidationError('The test is not finished yet! You are not allowed to input the results now.')
+        
         self.Registration.Status = 'Finished'
         self.Registration.save()
         
