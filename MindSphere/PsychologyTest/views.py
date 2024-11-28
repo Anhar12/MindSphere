@@ -32,23 +32,54 @@ def Home(request):
     return render(request, 'Home/index.html', context)
 
 def ScheduleList(request):
+    psychologists = Users.objects.filter(role=Users.PSYCHOLOGIST)
     today = now().date()
     tomorrow = today + timedelta(days=1)
-    
+
+    # Ambil parameter pencarian dari query string
+    query = request.GET.get('q', '')
+
+    # Buat queryset awal
     schedules = TestSchedules.objects.annotate(
         registered_count=Count('registrations'),
         truncated_date=TruncDate('Date')
-    ).all().order_by('-Date')
+    )
     
+    # Tambahkan anotasi nama lengkap psikolog
+    schedules = schedules.annotate(
+        full_name=Concat(
+            'Psychologist__first_name', 
+            Value(' '), 
+            'Psychologist__last_name'
+        )
+    )
+
+
+    # Terapkan filter pencarian jika ada query
+    if query:
+        schedules = schedules.filter(
+            Q(Name__icontains=query) |  # Pencarian berdasarkan nama tes
+            Q(full_name__icontains=query) |  # Pencarian pada nama lengkap psikolog
+            Q(Location__icontains=query)  # Pencarian berdasarkan lokasi
+        )
+
+    # Urutkan data
+    schedules = schedules.order_by('-Date')
+
+    # Tambahkan paginasi
     paginator = Paginator(schedules, 6)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    
+
+    # Kirim query ke template untuk ditampilkan kembali di input pencarian
     context = {
         'section': 'schedule-list',
+        'psychologists': psychologists,
         'test_schedules': page_obj,
-        'tomorrow': tomorrow
+        'tomorrow': tomorrow,
+        'query': query
     }
+
     return render(request, 'Home/schedule.html', context)
 
 def About(request):
@@ -125,34 +156,60 @@ def delete_old_file(file_path):
     if file_path and os.path.exists(file_path):
         os.remove(file_path)
 
+from django.db.models import Q, Value
+from django.db.models.functions import Concat
+
 @login_required()
 def TestSchedule(request):
     psychologists = Users.objects.filter(role=Users.PSYCHOLOGIST)
     today = now().date()
     tomorrow = today + timedelta(days=1)
-    
+
+    # Ambil parameter pencarian dari query string
+    query = request.GET.get('q', '')
+
+    # Buat queryset awal
     schedules = TestSchedules.objects.annotate(
         registered_count=Count('registrations'),
         truncated_date=TruncDate('Date')
-    ).all().order_by('-Date')
-    
+    )
+
+    # Tambahkan anotasi nama lengkap psikolog
+    schedules = schedules.annotate(
+        full_name=Concat(
+            'Psychologist__first_name', 
+            Value(' '), 
+            'Psychologist__last_name'
+        )
+    )
+
+    # Terapkan filter pencarian jika ada query
+    if query:
+        schedules = schedules.filter(
+            Q(Name__icontains=query) |  # Pencarian pada nama tes
+            Q(full_name__icontains=query) |  # Pencarian pada nama lengkap psikolog
+            Q(Location__icontains=query)  # Pencarian pada lokasi tes
+        )
+
+    # Urutkan data
+    schedules = schedules.order_by('-Date')
+
+    # Tambahkan paginasi
     paginator = Paginator(schedules, 6)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    
-    if request.user.role == -1:
-        return render(request, 'MindSphere/schedule.html', context={
-            'section' : 'test-schedule', 
-            'psychologists' : psychologists,
-            'test_schedules' : page_obj,
-            'tomorrow': tomorrow
-        })
-    
-    return render(request, 'MindSphere/schedule.html', context={
-        'section' : 'test-schedule',
-        'test_schedules' : page_obj,
-        'tomorrow': tomorrow
-    })
+
+    # Kirim query ke template untuk ditampilkan kembali di input pencarian
+    context = {
+        'section': 'test-schedule',
+        'psychologists': psychologists,
+        'test_schedules': page_obj,
+        'tomorrow': tomorrow,
+        'query': query
+    }
+
+    return render(request, 'MindSphere/schedule.html', context)
+
 
 @admin_required()
 def AddSchedule(request):

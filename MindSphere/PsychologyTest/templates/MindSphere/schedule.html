@@ -23,7 +23,7 @@ Schedule - Mindsphere
     <h2 class="fw-bold text-center mb-4">List Of <span class="text-primary">Psychological Test</span></h2>
 
     <div class="d-flex w-100 justify-content-between align-items-center flex-wrap mt-4 mb-4 gap-1">
-        <form id="form-search" method="GET" autocomplete="off" action="#"
+        <form id="form-search" method="GET" autocomplete="off" action="{% url 'test-schedule' %}"
             class="d-flex align-items-center flex-grow-1">
             <div class="form-group w-100 pe-1">
                 <input type="search" class="form-control fs-small" id="search" name="q" placeholder=" " maxlength="150"
@@ -44,6 +44,7 @@ Schedule - Mindsphere
         </button>
         {% endif %}
     </div>
+    
 
     {% if test_schedules %}
     <div class="d-flex flex-wrap justify-content-center gap-4">
@@ -165,7 +166,7 @@ Schedule - Mindsphere
     </div>
     {% else %}
     <div class="alert alert-warning text-center w-100">
-        No schedules found.
+        No schedules found for "{{ query }}".
     </div>
     {% endif %}
 </section>
