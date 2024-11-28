@@ -1,11 +1,12 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 from django.utils.timezone import now
 from . import Registrations
 
 class Results(models.Model):
     Registration = models.ForeignKey(Registrations, on_delete=models.CASCADE)
     Date = models.DateTimeField(default=now)
-    Summary = models.TextField(default="You're not completed this test")
+    Summary = models.TextField(null=True, blank=True)
     Recommendation = models.TextField(null=True, blank=True)
     ResultNumber = models.CharField(max_length=255, unique=True, null=True, blank=True)
     IsDone = models.BooleanField(default=False)
@@ -24,6 +25,12 @@ class Results(models.Model):
         
         if not self.IsDone:
             self.ResultNumber = "Not completed"
+        
+        if not self.Summary and self.IsDone:
+            raise ValidationError('Summary is required')
+        
+        if not self.Summary and not self.IsDone:
+            self.Summary = "You're not completed this test"
         
         self.Registration.Status = 'Finished'
         self.Registration.save()

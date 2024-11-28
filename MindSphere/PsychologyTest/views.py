@@ -40,6 +40,20 @@ def ScheduleList(request):
         truncated_date=TruncDate('Date')
     ).all().order_by('-Date')
     
+    query = request.GET.get('q')
+    if query:
+        schedules = TestSchedules.objects.annotate(
+            registered_count=Count('registrations'),
+            truncated_date=TruncDate('Date')
+        ).filter(
+            Q(Name__icontains=query) | 
+            Q(Date__icontains=query) | 
+            Q(Psychologist__first_name__icontains=query) | 
+            Q(Psychologist__last_name__icontains=query) | 
+            Q(Description__icontains=query) | 
+            Q(Location__icontains=query)
+        ).order_by('-Date')
+    
     paginator = Paginator(schedules, 6)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -47,7 +61,8 @@ def ScheduleList(request):
     context = {
         'section': 'schedule-list',
         'test_schedules': page_obj,
-        'tomorrow': tomorrow
+        'tomorrow': tomorrow,
+        'query': query
     }
     return render(request, 'Home/schedule.html', context)
 
@@ -136,6 +151,20 @@ def TestSchedule(request):
         truncated_date=TruncDate('Date')
     ).all().order_by('-Date')
     
+    query = request.GET.get('q')
+    if query:
+        schedules = TestSchedules.objects.annotate(
+            registered_count=Count('registrations'),
+            truncated_date=TruncDate('Date')
+        ).filter(
+            Q(Name__icontains=query) | 
+            Q(Date__icontains=query) | 
+            Q(Psychologist__first_name__icontains=query) | 
+            Q(Psychologist__last_name__icontains=query) | 
+            Q(Description__icontains=query) | 
+            Q(Location__icontains=query)
+        ).order_by('-Date')
+    
     paginator = Paginator(schedules, 6)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -145,13 +174,15 @@ def TestSchedule(request):
             'section' : 'test-schedule', 
             'psychologists' : psychologists,
             'test_schedules' : page_obj,
-            'tomorrow': tomorrow
+            'tomorrow': tomorrow,
+            'query': query
         })
     
     return render(request, 'MindSphere/schedule.html', context={
         'section' : 'test-schedule',
         'test_schedules' : page_obj,
-        'tomorrow': tomorrow
+        'tomorrow': tomorrow,
+        'query': query
     })
 
 @admin_required()
@@ -590,11 +621,9 @@ def GenerateCertificate(request, result_id):
     except Results.DoesNotExist:
         return HttpResponse("Result not found", status=404)
 
-    # Setup HTTP response
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename={result.ResultNumber}.pdf'
 
-    # Setup PDF Canvas
     p = canvas.Canvas(response, pagesize=letter)
     width, height = letter
 
@@ -605,28 +634,96 @@ def GenerateCertificate(request, result_id):
     
     p.drawImage(logo, x=50, y=height - 100, width=100, height=100, preserveAspectRatio=True, mask='auto')
 
-    p.setFont("Helvetica-Bold", 28)
-    p.drawString(200, height - 80, "Psychometric Test Certificate")
+    p.setFont("Helvetica-Bold", 36)
+    p.setFillColorRGB(0, 0, 0)
+    p.setStrokeColorRGB(3 / 255, 97 / 255, 104 / 255)
+    
+    p.drawCentredString(width/2 - 15, height - 55, 'MIND SPHERE')
+    
+    p.setFont("Helvetica-Bold", 14)
+    
+    p.drawCentredString(width/2 + 50, height - 80, 'Jl. Kuaro, Mt. Kelua, Kec. Samarinda Ulu, Samarinda City')
+    
+    p.setLineWidth(2)
+    p.line(0, height - 100, 700, height - 100)
 
     p.setFont("Helvetica-Bold", 16)
-    p.drawString(50, height - 150, f"Certificate Number: {result.ResultNumber}")
+    p.drawString(width/2 - len(result.ResultNumber)*4, height - 125, result.ResultNumber)
 
     p.setFont("Helvetica", 14)
-    intro_text = (
-        "This is to certify that the individual named below has successfully "
-        "completed the psychometric test with excellence and dedication. "
-        "We congratulate them for their achievement."
-    )
-    p.drawString(50, height - 190, intro_text)
+    p.drawString(50, height - 165, 'The undersigned below :')
+    p.drawString(65, height - 190, 'Psychologist')
+    p.drawString(200, height - 190, f': {result.Registration.TestSchedule.Psychologist.first_name} {result.Registration.TestSchedule.Psychologist.last_name}')
+    p.drawString(65, height - 210, 'Position')
+    p.drawString(200, height - 210, ': Psychologist')
+    p.drawString(65, height - 230, 'Company')
+    p.drawString(200, height - 230, ': Mind Sphere')
+    p.drawString(65, height - 250, 'Date')
+    p.drawString(200, height - 250, f': {result.Date.strftime("%d %B, %Y")}')
+    
+    p.drawString(50, height - 285, 'Certifies that :')
+    p.drawString(65, height - 310, 'Participant')
+    p.drawString(200, height - 310, f': {result.Registration.User.first_name} {result.Registration.User.last_name}')
+    p.drawString(65, height - 330, 'Test Type')
+    p.drawString(200, height - 330, f': {result.Registration.TestSchedule.Name}')
+    p.drawString(65, height - 350, 'Test Date')
+    p.drawString(200, height - 350, f': {result.Registration.TestSchedule.Date.strftime("%d %B, %Y")}')
+    p.drawString(65, height - 370, 'Test Location')
+    p.drawString(200, height - 370, f': {result.Registration.TestSchedule.Location}')
 
-    p.setFont("Helvetica-Bold", 18)
-    p.drawString(50, height - 250, f"Name: {result.Registration.User.first_name} {result.Registration.User.last_name}")
-    p.setFont("Helvetica", 16)
-    p.drawString(50, height - 280, f"Date: {result.Date.strftime('%B %d, %Y')}")
-
-    p.setFont("Helvetica", 14)
-    p.drawString(50, height - 320, "Congratulations on this significant accomplishment!")
-
+    p.drawString(50, height - 405, "Based on the results of the psychological test conducted on the date above.")
+    p.drawString(50, height - 425, "The following results were obtained:")
+    
+    p.drawString(65, height - 460, 'Summary of result')
+    textSummary = result.Summary.replace('\n', ' ')
+    nowHeight = height - 440
+    if len(textSummary) > 45*4:
+        textSummary = textSummary[0:45*4 - 2]
+        textSummary += '...'
+        
+    if len(textSummary) > 45:
+        count = int(len(textSummary)/45)
+        for i in range (count):
+            nowHeight -= 20
+            if i == 0:
+                p.drawString(200, nowHeight, f': {textSummary[i*45:i*45+45]}')
+            elif i == count - 1:
+                p.drawString(207, nowHeight, f'{textSummary[i*45:]}')
+            else:
+                p.drawString(207, nowHeight, f'{textSummary[i*45:i*45+45]}')
+    else:
+        nowHeight -= 20
+        p.drawString(200, nowHeight, f': {result.Summary}')
+    
+    p.drawString(65, nowHeight - 20, 'Recommendation')
+    textRecommendation = result.Recommendation.replace('\n', ' ')
+    if len(textRecommendation) > 45*5:
+        textRecommendation = textRecommendation[0:45*5 - 2]
+        textRecommendation += '...'
+    
+    if len(textRecommendation) > 45:
+        count = int(len(textRecommendation)/45)
+        for i in range (count):
+            nowHeight -= 20
+            if i == 0:
+                p.drawString(200, nowHeight, f': {textRecommendation[i*45:i*45+45]}')
+            elif i == count - 1:
+                p.drawString(207, nowHeight, f'{textRecommendation[i*45:]}')
+            else:
+                p.drawString(207, nowHeight, f'{textRecommendation[i*45:i*45+45]}')
+    else:
+        p.drawString(200, nowHeight - 20, f': {result.Recommendation}')
+    
+    p.drawString(400, 130, 'Best Regards,')
+    
+    logo_path = 'PsychologyTest/static/images/ttd.png'
+    logo = os.path.join(settings.BASE_DIR, logo_path).replace('\\', '/')
+    
+    p.drawImage(logo, x=390, y=50, width=105, height=70, preserveAspectRatio=True, mask='auto')
+    
+    p.setFont("Helvetica-Bold", 16)
+    p.drawString(360, 30, 'Director of Mind Shpere')
+    
     p.showPage()
     p.save()
     return response
