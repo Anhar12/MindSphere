@@ -572,7 +572,7 @@ def ForgotPassword(request):
         except Exception as e:
             return JsonResponse({
                 'status': 'error',
-                'message': 'Failed to send email. Please try again later.',
+                'message': 'Failed to send email. ' + str(e),
             })
 
     return JsonResponse({

@@ -300,13 +300,17 @@
                                 csrfmiddlewaretoken: "{{ csrf_token }}",
                             },
                             success: function (response) {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Successfully!',
-                                    text: response.message,
-                                    confirmButtonText: 'Ok',
-                                    confirmButtonColor: '#036168',
-                                });
+                                if (response.status === 'success' ) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Successfully!',
+                                        text: response.message,
+                                        confirmButtonText: 'Ok',
+                                        confirmButtonColor: '#036168',
+                                    });
+                                } else {
+                                    ErrorPopUp(response.message);
+                                }
                             },
                             error: function (xhr) {
                                 ErrorPopUp(xhr.responseJSON.message);
@@ -316,7 +320,6 @@
                 });
             });
 
-            
         });
     </script>
 </body>
