@@ -6,12 +6,12 @@ Account Settings - Mindsphere
 
 {% block content %}
 
-<section class="w-100 px-4 pt-5 pt-md-3">
-    <h5 class="fw-bold fs-md-4 fs-5 text-center"> Your account <span class="text-primary">settings</span></h5>
+<section class="w-100 px-4" style="margin-top: 30px;">
+    <h2 class="fw-bold text-center mb-4">Your Account <span class="text-primary">Settings</span></h2>
 
     <div class="row">
-        <div class="col-md-6 px-3 py-4">
-            <h3 class="mb-4 fw-semibold text-primary border-bottom border-2 border-primary lh-base"> Profile Setting </h3>
+        <div class="col-md-6 px-4 py-4">
+            <h3 class="mb-4 fw-bold text-primary border-bottom border-2 border-primary lh-base"> Profile Setting </h3>
             <form id="form-profile" method="POST" autocomplete="off" class="">
                 {% csrf_token %}
                 
@@ -55,14 +55,14 @@ Account Settings - Mindsphere
                 </div>
                 
                 <div class="d-flex gap-2 w-25 mt-3">
-                    <button type="submit" class="btn btn-success w-100 mx-auto fs-small fw-bold">Save</button>
                     <button class="btn btn-secondary w-100 mx-auto fs-small fw-bold btn-cancel">Cancel</button>
+                    <button type="submit" class="btn btn-success w-100 mx-auto fs-small fw-bold">Save</button>
                 </div>
             </form>
         </div>
         
-        <div class="col-md-6 px-3 py-4">
-            <h3 class="mb-4 fw-semibold text-primary border-bottom border-2 border-primary lh-base"> Change Password </h3>
+        <div class="col-md-6 px-4 py-4">
+            <h3 class="mb-4 fw-bold text-primary border-bottom border-2 border-primary lh-base"> Change Password </h3>
             <form id="form-password" method="POST" autocomplete="off" class="">
                 {% csrf_token %}
                 
@@ -96,8 +96,8 @@ Account Settings - Mindsphere
                 </div>
                 
                 <div class="d-flex gap-2 w-25 mt-3">
-                    <button type="submit" class="btn btn-success w-100 mx-auto fs-small fw-bold">Save</button>
                     <button class="btn btn-secondary w-100 mx-auto fs-small fw-bold btn-cancel">Cancel</button>
+                    <button type="submit" class="btn btn-success w-100 mx-auto fs-small fw-bold">Save</button>
                 </div>
             </form>
         </div>

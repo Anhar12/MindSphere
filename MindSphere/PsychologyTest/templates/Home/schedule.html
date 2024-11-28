@@ -9,15 +9,17 @@ Schedule List - MindSphere
     <h1 class="fw-bold text-center mb-4">List Of <span class="text-primary">Psychological Test</span></h1>
 
     <div class="d-flex flex-column w-100 gap-3 my-4">
-        <form id="form-search" method="GET" autocomplete="off" action="#" class="d-flex align-items-center w-100 gap-2">
+        <form id="form-search" method="GET" autocomplete="off" action="{% url 'schedule-list' %}" class="d-flex align-items-center w-100 gap-2">
             <div class="form-group flex-grow-1 position-relative">
                 <input type="search" class="form-control fs-small pe-4" id="search" name="q"
                     placeholder="Search Schedule" maxlength="150" value="{{ query|default:'' }}">
             </div>
-            <button type="submit" class="btn btn-primary fs-small fw-bold"><i
-                    class="fa-solid fa-magnifying-glass"></i></button>
+            <button type="submit" class="btn btn-primary fs-small fw-bold">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
         </form>
     </div>
+    
 
     {% if test_schedules %}
     <div class="d-flex flex-wrap justify-content-center gap-4">
@@ -60,7 +62,7 @@ Schedule List - MindSphere
                 
                 <div class="justify-content-end d-flex w-50 gap-1 p-0">
                     <div class="text-end">
-                        {% if test_schedule.registered_count < test_schedule.Capacity and test_schedule.truncated_date >= tomorrow %}
+                        {% if test_schedule.truncated_date >= tomorrow and test_schedule.registered_count < test_schedule.Capacity %}
                             <button class="btn btn-success btn-sm btn-regis">Register</button>
                         {% else %}
                             <button class="btn btn-danger btn-sm btn-notavailable">Not Available</button>
@@ -123,7 +125,7 @@ Schedule List - MindSphere
     </div>
     {% else %}
     <div class="alert alert-warning text-center w-100">
-        No schedules found.
+        No schedules found for "{{ query }}".
     </div>
     {% endif %}
 </section>
