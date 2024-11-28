@@ -20,9 +20,7 @@ from django.utils.timezone import now
 from django.db.models import Count
 from django.http import HttpResponse
 from reportlab.lib.pagesizes import letter
-from django.templatetags.static import static
 from reportlab.pdfgen import canvas
-from reportlab.lib.utils import ImageReader
 import os
 
 def Home(request):
@@ -32,6 +30,14 @@ def Home(request):
     return render(request, 'Home/index.html', context)
 
 def ScheduleList(request):
+    today = now().date()
+    tomorrow = today + timedelta(days=1)
+    
+    schedules = TestSchedules.objects.annotate(
+        registered_count=Count('registrations'),
+        truncated_date=TruncDate('Date')
+    ).all().order_by('-Date')
+    
     query = request.GET.get('q')
     if query:
         schedules = TestSchedules.objects.annotate(
@@ -49,16 +55,13 @@ def ScheduleList(request):
     paginator = Paginator(schedules, 6)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-
-    # Kirim query ke template untuk ditampilkan kembali di input pencarian
+    
     context = {
         'section': 'schedule-list',
-        'psychologists': psychologists,
         'test_schedules': page_obj,
         'tomorrow': tomorrow,
         'query': query
     }
-
     return render(request, 'Home/schedule.html', context)
 
 def About(request):
@@ -135,11 +138,17 @@ def delete_old_file(file_path):
     if file_path and os.path.exists(file_path):
         os.remove(file_path)
 
-from django.db.models import Q, Value
-from django.db.models.functions import Concat
-
 @login_required()
 def TestSchedule(request):
+    psychologists = Users.objects.filter(role=Users.PSYCHOLOGIST)
+    today = now().date()
+    tomorrow = today + timedelta(days=1)
+    
+    schedules = TestSchedules.objects.annotate(
+        registered_count=Count('registrations'),
+        truncated_date=TruncDate('Date')
+    ).all().order_by('-Date')
+    
     query = request.GET.get('q')
     if query:
         schedules = TestSchedules.objects.annotate(
@@ -173,7 +182,6 @@ def TestSchedule(request):
         'tomorrow': tomorrow,
         'query': query
     })
-
 
 @admin_required()
 def AddSchedule(request):
