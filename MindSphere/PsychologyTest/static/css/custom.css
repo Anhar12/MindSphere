@@ -267,6 +267,13 @@
     overflow: hidden;
 }
 
+.text-truncate-1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1; 
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
 .text-justify {
     text-align: justify;
 }
@@ -318,7 +325,7 @@ footer a.nav-link:hover {
 .form-control:focus + .form-label,
 .form-control:not(:placeholder-shown) + .form-label {
     top: -10px;
-    left: 0.3rem;
+    left: 0.5rem;
     font-size: 0.7rem !important;
     color: #036168;
 }

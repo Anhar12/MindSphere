@@ -10,7 +10,8 @@ Account Settings - Mindsphere
     <h5 class="fw-bold fs-md-4 fs-5 text-center"> Your account <span class="text-primary">settings</span></h5>
 
     <div class="row">
-        <div class="col-md-6 px-3 py-5">
+        <div class="col-md-6 px-3 py-4">
+            <h3 class="mb-4 fw-semibold text-primary border-bottom border-2 border-primary lh-base"> Profile Setting </h3>
             <form id="form-profile" method="POST" autocomplete="off" class="">
                 {% csrf_token %}
                 
@@ -60,7 +61,8 @@ Account Settings - Mindsphere
             </form>
         </div>
         
-        <div class="col-md-6 px-3 py-5">
+        <div class="col-md-6 px-3 py-4">
+            <h3 class="mb-4 fw-semibold text-primary border-bottom border-2 border-primary lh-base"> Change Password </h3>
             <form id="form-password" method="POST" autocomplete="off" class="">
                 {% csrf_token %}
                 

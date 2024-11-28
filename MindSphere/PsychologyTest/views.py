@@ -265,7 +265,11 @@ def DeleteSchedule(request, pk):
 @user_required()
 def RegisterSchedule(request, pk):
     if request.method == 'POST':
-        schedule = TestSchedules.objects.filter(id=pk).first()
+        schedule = TestSchedules.objects.annotate(
+            registered_count=Count('registrations'),
+            truncated_date=TruncDate('Date')
+        ).filter(id=pk).first()
+        
         if not schedule:
             return JsonResponse({
                 'status': 'error',
@@ -278,11 +282,16 @@ def RegisterSchedule(request, pk):
                 'message': 'You have already registered for this schedule!'
             })
         
-        total_registered = Registrations.objects.filter(TestSchedule=schedule).count()
-        if total_registered >= schedule.Capacity:
+        if schedule.registered_count >= schedule.Capacity:
             return JsonResponse({
                 'status': 'error',
                 'message': 'Test schedule has reached its maximum capacity.'
+            })
+            
+        if schedule.truncated_date <= now().date():
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Test schedule has already passed.'
             })
         
         registration = Registrations(User=request.user, TestSchedule=schedule)

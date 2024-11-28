@@ -44,15 +44,11 @@ Schedule - Mindsphere
         </button>
         {% endif %}
     </div>
-    
-    
-    
-    
 
     {% if test_schedules %}
-    <div class="d-flex flex-wrap justify-content-center gap-5">
+    <div class="d-flex flex-wrap justify-content-center gap-4">
         {% for test_schedule in test_schedules %}
-        <div class="card shadow-btn border border-primary" style="width: 18rem; cursor: pointer"
+        <div class="card shadow-btn border border-primary" style="width: 19rem; cursor: pointer"
             data-id="{{ test_schedule.id }}" data-name="{{ test_schedule.Name }}"
             data-psychologist="{{ test_schedule.Psychologist.id }}"
             data-psychologist-name="{{ test_schedule.Psychologist.first_name }} {{ test_schedule.Psychologist.last_name }}"
@@ -69,7 +65,7 @@ Schedule - Mindsphere
                     {{ test_schedule.Name }}
                 </h5>
                 <div class="row">
-                    <p class="mb-1 col-8" style="font-size: 14px;">
+                    <p class="mb-1 col-8 text-truncate-1" style="font-size: 14px;">
                         <span class="fw-semibold mb-2">By <span class="text-primary">{{test_schedule.Psychologist.first_name }} {{ test_schedule.Psychologist.last_name}}</span></span>
                     </p>
                     <p class="mb-1 col-4 text-end" style="font-size: 14px;">
@@ -77,7 +73,7 @@ Schedule - Mindsphere
                     </p>
                 </div>
                 <p class="text-secondary text-truncate-3 text-justify overflow-hidden"
-                    style="height: 58px; font-size: 14px;">
+                    style="height: 61px; font-size: 14px;">
                     {{ test_schedule.Description }}
                 </p>
             </div>
@@ -100,18 +96,17 @@ Schedule - Mindsphere
                                 class="fas fa-trash-alt"></i></button>
                     </div>
                     {% elif user.role == 2 %}
-                    <div class="text-end">
-                        <button class="btn btn-success btn-sm btn-regis"
-                            data-id="{{ test_schedule.id }}">Register</button>
-                    </div>
+                        {% if test_schedule.truncated_date >= tomorrow and test_schedule.registered_count < test_schedule.Capacity %}
+                            <div class="text-end">
+                                <button class="btn btn-success btn-sm btn-regis"
+                                    data-id="{{ test_schedule.id }}">Register</button>
+                            </div>
+                        {% else %}
+                            <div class="text-end">
+                                <button class="btn btn-danger btn-sm btn-notavailable">Not Available</button>
+                            </div>
+                        {% endif %}
                     {% else %}
-                    <div class="text-end">
-                        <button class="btn btn-danger btn-sm btn-notavailable">Not Available</button>
-                    </div>
-<<<<<<< HEAD
-=======
-                   
->>>>>>> 8e2e0399feede9f2922806476a8b403e12d885e7
                     {% endif %}
                 </div>
             </div>
@@ -205,11 +200,7 @@ Schedule - Mindsphere
                                 {% if psychologists %}
                                 <option value="" disabled selected hidden>Select Psychologist</option>
                                 {% for psychologist in psychologists %}
-<<<<<<< HEAD
                                 <option value="{{ psychologist.id }}">{{ psychologist.first_name }} {{psychologist.last_name }}</option>
-=======
-                                <option value="{{ psychologist.id }}">{{ psychologist.first_name }} {{ psychologist.last_name }}</option>
->>>>>>> 8e2e0399feede9f2922806476a8b403e12d885e7
                                 {% endfor %}
                                 {% else %}
                                 <option value="" disabled selected hidden class="text-danger">Nothing Psychologist
@@ -318,6 +309,16 @@ Schedule - Mindsphere
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="modal-footer d-none" id="regis">
+                <form id="form-regis" method="post" action="">
+                    {% csrf_token %}
+                    <input type="hidden" id="schedule-id" name="schedule-id">
+                </form>
+                <div class="d-flex gap-2">
+                    <button type="btn-close" class="btn fw-semibold btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn fw-semibold btn-success" form="form-regis">Register For This Test</button>
                 </div>
             </div>
         </div>
@@ -550,7 +551,8 @@ Schedule - Mindsphere
             $('#scheduleDetailModal').modal('show');
         });
 
-        $('.btn-regis').on('click', function () {
+        $('.btn-regis').on('click', function (e) {
+            //e.stopPropagation();
             const id = $(this).data('id')
             $('#schedule-id').val(id);
             $('#regis').removeClass('d-none');
@@ -558,7 +560,6 @@ Schedule - Mindsphere
             let baseUrl = "{% url 'regis-schedule' 0 %}";
             let dynamicUrl = baseUrl.replace('0', id);
             $('#form-regis').attr('data-url', dynamicUrl);
-
         });
 
         $('#form-regis').on('submit', function (e) {

@@ -20,9 +20,9 @@ Schedule List - MindSphere
     </div>
 
     {% if test_schedules %}
-    <div class="d-flex flex-wrap justify-content-center gap-5">
+    <div class="d-flex flex-wrap justify-content-center gap-4">
         {% for test_schedule in test_schedules %}
-        <div class="card shadow-btn border border-primary" style="width: 18rem; cursor: pointer;"
+        <div class="card shadow-btn border border-primary" style="width: 19rem; cursor: pointer;"
             data-id="{{ test_schedule.id }}" data-name="{{ test_schedule.Name }}"
             data-psychologist="{{ test_schedule.Psychologist.id }}"
             data-psychologist-name="{{ test_schedule.Psychologist.first_name }} {{ test_schedule.Psychologist.last_name }}"
@@ -47,7 +47,7 @@ Schedule List - MindSphere
                     </p>
                 </div>
                 <p class="text-secondary text-truncate-3 text-justify overflow-hidden"
-                    style="height: 58px; font-size: 14px;">
+                    style="height: 61px; font-size: 14px;">
                     {{ test_schedule.Description }}
                 </p>
             </div>
