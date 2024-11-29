@@ -79,17 +79,24 @@ py manage.py runserver
 
 ## 📸 **Tangkapan Layar**
 
-### Landing Page
+### Home
 ![screencapture-127-0-0-1-8000-2024-11-29-20_52_32](https://github.com/user-attachments/assets/f4601e56-0a82-45c8-b883-e16b200f63e1)
 
-### Schedule List Page
+### Schedule List
 ![screencapture-127-0-0-1-8000-schedule-list-2024-11-29-21_53_26](https://github.com/user-attachments/assets/94162458-76b3-43c5-ac49-d6edc0a2bdc3)
 
-### About Us Page
+### About Us
 ![screencapture-127-0-0-1-8000-about-2024-11-29-20_54_53](https://github.com/user-attachments/assets/9e045857-a3b0-4ff4-b5fe-a1a22d8f4e5d)
 
-### Contact Us Page
+### Contact Us
 ![screencapture-127-0-0-1-8000-contact-2024-11-29-20_55_47](https://github.com/user-attachments/assets/ad669e47-10f9-488a-8c0d-c37507168c8b)
+
+### Sign-In
+![screencapture-127-0-0-1-8000-sign-in-2024-11-29-21_54_54](https://github.com/user-attachments/assets/16c135e3-75c1-4e7a-a73d-dc30b044c6f2)
+
+
+### Sign-Up
+![screencapture-127-0-0-1-8000-sign-up-2024-11-29-21_55_02](https://github.com/user-attachments/assets/f38a5302-1a3d-409e-904c-06018d506cc9)
 
 
 
