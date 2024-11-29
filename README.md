@@ -75,3 +75,21 @@ py manage.py migrate
 cd MindSphere
 py manage.py runserver
 ```
+---
+
+## 📸 **Tangkapan Layar**
+
+### Landing Page
+![screencapture-127-0-0-1-8000-2024-11-29-20_52_32](https://github.com/user-attachments/assets/f4601e56-0a82-45c8-b883-e16b200f63e1)
+
+### Schedule List Page
+
+### About Us Page
+![screencapture-127-0-0-1-8000-about-2024-11-29-20_54_53](https://github.com/user-attachments/assets/9e045857-a3b0-4ff4-b5fe-a1a22d8f4e5d)
+
+### Contact Us Page
+![screencapture-127-0-0-1-8000-contact-2024-11-29-20_55_47](https://github.com/user-attachments/assets/ad669e47-10f9-488a-8c0d-c37507168c8b)
+
+
+
+
