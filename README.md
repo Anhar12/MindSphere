@@ -31,8 +31,8 @@ MindSphere adalah sebuah platform untuk mempermudah proses pembookingan jadwal t
 
 ## 🛠 **Teknologi yang Digunakan**
 
-- **Frontend:** CSS, JavaScript
-- **Backend:** 
+- **Frontend:** CSS, JavaScript, Bootstrap, Jquery, Ag Grid, Sweet Alert
+- **Backend:** Django
 - **Database:** MariaDB
 - **Cloud:** 
 
