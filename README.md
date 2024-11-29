@@ -1,6 +1,7 @@
-# ![Desain_tanpa_judul_(19)-transformed_(1)-transformed](https://github.com/user-attachments/assets/c3a01c19-e57e-48eb-8c20-19d0f94804eb)
-**MindSphere**  
-_Unlock Your True Potential_
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/c3a01c19-e57e-48eb-8c20-19d0f94804eb" alt="Desain tanpa judul" width="300">
+</div>
+
 
 ---
 
