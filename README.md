@@ -97,6 +97,29 @@ py manage.py runserver
 ### Sign-Up
 ![screencapture-127-0-0-1-8000-sign-up-2024-11-29-21_55_02](https://github.com/user-attachments/assets/f38a5302-1a3d-409e-904c-06018d506cc9)
 
+### Test Schedule (Admin)
+![image](https://github.com/user-attachments/assets/1af9107c-836a-48ae-9e90-a6eed30bb9b3)
 
+### Create Schedule (Admin)
+![image](https://github.com/user-attachments/assets/8590b411-f90e-496f-922b-53a74474a362)
 
+### Create Psychologist Account (Admin)
+![image](https://github.com/user-attachments/assets/18b8a34a-f62a-4793-995f-9c8ffbe9626a)
 
+### History
+![image](https://github.com/user-attachments/assets/e7fbdb54-a12a-478a-8045-719c02ddb993)
+
+### Account Settings
+![image](https://github.com/user-attachments/assets/0791e48e-5a17-4b8f-9e69-af0c82438ab8)
+
+### Test Schedule (Participant/User)
+![image](https://github.com/user-attachments/assets/7a4438cd-c29a-4e3d-9131-3ac16deb4d4b)
+
+### Psychological Test (Participant/User)
+![image](https://github.com/user-attachments/assets/34293c52-4d6c-440a-a78e-60d8639f0e74)
+
+### Test Schedule (Psychologist)
+![image](https://github.com/user-attachments/assets/e63a02e8-b64d-4d73-99dc-9d83abc8d012)
+
+### Psychological Test (Psychologist)
+![image](https://github.com/user-attachments/assets/347f4666-4148-4a2a-a89a-9369fc537fcb)
