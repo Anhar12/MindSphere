@@ -76,7 +76,7 @@ py manage.py runserver
 ```
 ---
 
-## 📸 **Tangkapan Layar**
+## 📸 **Tampilan Website**
 
 ### Home
 ![screencapture-127-0-0-1-8000-2024-11-29-20_52_32](https://github.com/user-attachments/assets/f4601e56-0a82-45c8-b883-e16b200f63e1)
