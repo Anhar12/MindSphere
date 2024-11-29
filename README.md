@@ -23,14 +23,14 @@ MindSphere adalah sebuah platform untuk mempermudah proses pembookingan jadwal t
 
 ## 🛠 **Teknologi yang Digunakan**
 
-- **Frontend:** CSS
+- **Frontend:** CSS, JavaScript
 - **Backend:** 
 - **Database:** MariaDB
 - **Cloud:** 
 
 ---
  
-# How to get this project?
+## 📖 **Dokumentasi**
 *follow the command below with your terminal/cmd/git bash*
 
 - Clone project
