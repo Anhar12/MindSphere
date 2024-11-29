@@ -83,6 +83,7 @@ py manage.py runserver
 ![screencapture-127-0-0-1-8000-2024-11-29-20_52_32](https://github.com/user-attachments/assets/f4601e56-0a82-45c8-b883-e16b200f63e1)
 
 ### Schedule List Page
+![screencapture-127-0-0-1-8000-schedule-list-2024-11-29-21_53_26](https://github.com/user-attachments/assets/94162458-76b3-43c5-ac49-d6edc0a2bdc3)
 
 ### About Us Page
 ![screencapture-127-0-0-1-8000-about-2024-11-29-20_54_53](https://github.com/user-attachments/assets/9e045857-a3b0-4ff4-b5fe-a1a22d8f4e5d)
