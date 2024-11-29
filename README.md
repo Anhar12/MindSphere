@@ -30,7 +30,7 @@ MindSphere adalah sebuah platform untuk mempermudah proses pembookingan jadwal t
 
 ---
  
-## 📖 **Dokumentasi**
+## 🚀 **Cara Menjalankan Project**
 *follow the command below with your terminal/cmd/git bash*
 
 - Clone project
