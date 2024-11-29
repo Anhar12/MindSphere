@@ -1,8 +1,6 @@
-﻿# MindSphere
-
 # ![Desain_tanpa_judul_(19)-transformed_(1)-transformed](https://github.com/user-attachments/assets/c3a01c19-e57e-48eb-8c20-19d0f94804eb)
 **MindSphere**  
-_Your Gateway to a Smarter Digital World_
+_Unlock Your True Potential_
 
 ---
 
@@ -24,10 +22,10 @@ MindSphere adalah sebuah platform untuk mempermudah proses pembookingan jadwal t
 
 ## 🛠 **Teknologi yang Digunakan**
 
-- **Frontend:** React.js, TailwindCSS
-- **Backend:** Node.js, Express.js
-- **Database:** MongoDB
-- **Cloud:** AWS (S3, EC2)
+- **Frontend:** CSS
+- **Backend:** 
+- **Database:** MariaDB
+- **Cloud:** 
 
 ---
  
