@@ -8,16 +8,24 @@
 ## 🌟 **Pendahuluan**
 
 Selamat datang di repositori **MindSphere**!  
-MindSphere adalah sebuah platform untuk mempermudah proses pembookingan jadwal tes psikologi, serta memberikan akses kepada pengguna untuk melihat hasil tes yang telah dilakukan secara offline. Website ini dirancang untuk meningkatkan efisiensi layanan psikologi dengan tampilan yang mudah digunakan dan fitur-fitur fungsional.
+MindSphere adalah sebuah platform untuk mempermudah proses pembookingan jadwal tes psikologi, serta memberikan akses kepada pengguna untuk melihat hasil tes yang telah dilakukan secara offline. Website ini dirancang untuk meningkatkan efisiensi layanan psikologi dengan tampilan responsive yang mudah digunakan dan fitur-fitur fungsional.
 
 ---
 
 ## ✨ **Fitur Utama**
 
-- **Dashboard Interaktif:** Visualisasi data real-time dengan grafik yang mudah dipahami.
-- **Manajemen Data yang Andal:** Unggah, kelola, dan proses data Anda dengan sistem yang terintegrasi.
-- **Keamanan Tingkat Tinggi:** Proteksi data pengguna dengan teknologi enkripsi terbaru.
-- **Kustomisasi Mudah:** Sesuaikan pengaturan untuk memenuhi kebutuhan unik Anda.
+### **Untuk Pengguna**  
+- **Pendaftaran Akun**: Pengguna dapat membuat akun untuk mengakses layanan platform.
+- **Pendaftaran Tes Psikologi**: Daftar untuk mengikuti tes psikologi secara online.  
+- **Melihat Hasil Tes**: Akses hasil tes secara langsung di dashboard.  
+- **Download Sertifikat**: Unduh sertifikat hasil tes dalam format PDF.  
+
+### **Untuk Staf Psikolog**  
+- **Penilaian Tes Peserta**: Memberikan hasil penilaian terhadap tes peserta.  
+
+### **Untuk Admin**  
+- **Manajemen Jadwal Tes**: Membuat dan mengelola jadwal tes psikologi.  
+- **Pembuatan Akun Psikolog**: Menambahkan akun staf psikolog untuk memberikan penilaian.  
 
 ---
 
